@@ -9,10 +9,13 @@ import {createFilmCardTemplate} from './view/film-card.js';
 import {createShowMoreTemplate} from './view/show-more.js';
 import {createPopupTemplate} from './view/popup.js';
 import {createFooterStatsTemplate} from './view/footer-stats.js';
+import {generateFilmCard} from './mock/film-card.js';
 
-const FILM_COUNT = 5;
+const FILM_COUNT = 20;
 const TOP_RATED_COUNT = 2;
 const COMMENTED_COUNT = 2;
+
+const filmCards = new Array(FILM_COUNT).fill().map(generateFilmCard);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);

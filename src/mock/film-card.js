@@ -87,8 +87,9 @@ const generateDescription = () => {
 const getHumanizedDuration = (minsTotal) => {
   const hours = Math.floor(minsTotal / 60);
   const mins = minsTotal % 60;
+  const hoursOutput = hours ? hours + 'h ' : '';
 
-  return hours ? hours + 'h' : '' + mins + 'm';
+  return hoursOutput + mins + 'm';
 };
 
 export const generateFilmCard = () => {
