@@ -15,7 +15,7 @@ export const createFilmCardTemplate = (film) => {
     duration,
     genre,
     description,
-    commentCount,
+    comments,
     isWatchListed,
     isWatched,
     isFavorite
@@ -24,6 +24,9 @@ export const createFilmCardTemplate = (film) => {
   const watchListClassName = isWatchListed ? 'film-card__controls-item--active' : '';
   const watchedClassName = isWatched ? 'film-card__controls-item--active' : '';
   const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
+  const commentCount = comments.length;
+
+  console.log(comments);
 
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
@@ -31,7 +34,7 @@ export const createFilmCardTemplate = (film) => {
     <p class="film-card__info">
       <span class="film-card__year">${releaseDate}</span>
       <span class="film-card__duration">${duration}</span>
-      <span class="film-card__genre">${genre}</span>
+      <span class="film-card__genre">${genre[0]}</span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${truncateText(description)}</p>

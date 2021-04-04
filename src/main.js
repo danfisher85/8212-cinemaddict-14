@@ -11,7 +11,7 @@ import {createPopupTemplate} from './view/popup.js';
 import {createFooterStatsTemplate} from './view/footer-stats.js';
 
 // Mocks
-import {generateFilmCard} from './mock/film-card.js';
+import {generateFilmCard} from './mock/film.js';
 
 const FILM_COUNT = 20;
 const TOP_RATED_COUNT = 2;
