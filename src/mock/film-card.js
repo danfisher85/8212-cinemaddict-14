@@ -81,7 +81,7 @@ const generateSentence = () => {
 const generateDescription = () => {
   const randomDescriptionSize = getRandomInteger(1, 5);
 
-  return new Array(randomDescriptionSize).fill().map(() => generateSentence());
+  return new Array(randomDescriptionSize).fill().map(() => generateSentence()).join('');
 };
 
 const getHumanizedDuration = (minsTotal) => {
@@ -96,7 +96,7 @@ export const generateFilmCard = () => {
   return {
     title: generateTitle(),
     poster: generatePoster(),
-    rating: getRandomInteger(1.0, 10.0, false),
+    rating: getRandomInteger(1.0, 9.0, false),
     releaseDate: getRandomInteger(1900, 2000),
     duration: getHumanizedDuration(getRandomInteger(45, 180)),
     genre: generateGenre(),
