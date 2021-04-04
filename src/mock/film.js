@@ -9,45 +9,48 @@ const getRandomInteger = (a = 0, b = 1, isFloor = true) => {
   return +num.toFixed(1);
 };
 
-const generateComment = () => {
-  const comments = [
-    {
-      id: 1,
-      text: 'Interesting setting and a good cast',
-      emoji: 'smile',
-      author: 'Tim Macoveev',
-      date: '2019/12/31 23:59',
-    },
-    {
-      id: 2,
-      text: 'Booooooooooring',
-      emoji: 'sleeping',
-      author: 'John Doe',
-      date: '2 days ago',
-    },
-    {
-      id: 3,
-      text: 'Very very old. Meh',
-      emoji: 'puke',
-      author: 'John Doe',
-      date: '2 days ago',
-    },
-    {
-      id: 4,
-      text: 'Almost two hours? Seriously?',
-      emoji: 'angry',
-      author: 'John Doe',
-      date: 'Today',
-    },
-  ];
+const getRandomArrayElement = (array) => {
+  return array[getRandomInteger(0, array.length-1)];
+};
 
-  const randomIndex = getRandomInteger(0, comments.length - 1);
+const uniqId = function () {
+  return '-' + Math.random().toString(36).substr(2, 9);
+};
 
-  return comments[randomIndex];
+const NAMES = [
+  'Tim Macoveev',
+  'John Doe',
+  'Tim Burry',
+  'Joe Johnson',
+  'Jimmy Klarkson',
+];
+
+const COMMENTS = [
+  'Interesting setting and a good cast',
+  'Booooooooooring',
+  'Very very old. Meh',
+  'Almost two hours? Seriously?',
+];
+
+const EMOJI = [
+  'smile',
+  'sleeping',
+  'puke',
+  'angry',
+];
+
+const generateComment = (id) => {
+  return {
+    id: `comment${id}`,
+    author: `${getRandomArrayElement(NAMES)}`,
+    comment: `${getRandomArrayElement(COMMENTS)}`,
+    data: '2019/12/31 23:59',
+    emoji: `${getRandomArrayElement(EMOJI)}`,
+  };
 };
 
 const generateCommentsList = () => {
-  return new Array(getRandomInteger(0, 5)).fill().map(() => generateComment());
+  return new Array(getRandomInteger(0, 5)).fill().map(() => generateComment(uniqId()));
 };
 
 const generateTitle = () => {
@@ -227,7 +230,7 @@ export const generateFilmCard = () => {
     rating: getRandomInteger(1.0, 9.0, false),
     releaseDate: getRandomInteger(1900, 2000),
     duration: getHumanizedDuration(getRandomInteger(45, 180)),
-    genre: generateFilmGenres(),
+    genres: generateFilmGenres(),
     description: generateDescription(),
     comments: generateCommentsList(),
     isWatchListed: Boolean(getRandomInteger(0, 1)),

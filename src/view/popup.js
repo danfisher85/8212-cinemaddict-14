@@ -1,5 +1,5 @@
-const createCommentTemplate = (comments) => {
-  return Object.values(comments).map(({id, text, emoji, author, date}) => `<li class="film-details__comment" id="comment-${id}">
+const createCommentTemplate = (comment) => {
+  return Object.values(comment).map(({id, text, emoji, author, date}) => `<li class="film-details__comment" id="comment${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
     </span>
@@ -12,6 +12,20 @@ const createCommentTemplate = (comments) => {
       </p>
     </div>
   </li>`).join('');
+};
+
+const createEmojiTemplate = () => {
+  const emojis = [
+    'smile',
+    'sleeping',
+    'puke',
+    'angry',
+  ];
+
+  return emojis.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
+    <label class="film-details__emoji-label" for="emoji-${emoji}">
+      <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
+    </label>`).join('');
 };
 
 export const createPopupTemplate = (film = {}) => {
@@ -60,6 +74,7 @@ export const createPopupTemplate = (film = {}) => {
   const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
 
   const commentTemplate = createCommentTemplate(comments);
+  const emojiTemplate = createEmojiTemplate();
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -139,7 +154,7 @@ export const createPopupTemplate = (film = {}) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
             ${commentTemplate}
@@ -153,25 +168,7 @@ export const createPopupTemplate = (film = {}) => {
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-              <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-              <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-              <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-              </label>
+              ${emojiTemplate}
             </div>
           </div>
         </section>
