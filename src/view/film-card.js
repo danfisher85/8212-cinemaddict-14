@@ -18,15 +18,13 @@ export const createFilmCardTemplate = (film) => {
     comments,
     isWatchListed,
     isWatched,
-    isFavorite
+    isFavorite,
   } = film;
 
   const watchListClassName = isWatchListed ? 'film-card__controls-item--active' : '';
   const watchedClassName = isWatched ? 'film-card__controls-item--active' : '';
   const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
   const commentCount = comments.length;
-
-  console.log(comments);
 
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>

@@ -38,7 +38,7 @@ const generateComment = () => {
       emoji: 'angry',
       author: 'John Doe',
       date: 'Today',
-    }
+    },
   ];
 
   const randomIndex = getRandomInteger(0, comments.length - 1);
@@ -48,7 +48,7 @@ const generateComment = () => {
 
 const generateCommentsList = () => {
   return new Array(getRandomInteger(0, 5)).fill().map(() => generateComment());
-}
+};
 
 const generateTitle = () => {
   const titles = [

@@ -52,7 +52,7 @@ export const createPopupTemplate = (film = {}) => {
     ],
     isWatchListed = false,
     isWatched = false,
-    isFavorite = false
+    isFavorite = false,
   } = film;
 
   const watchListClassName = isWatchListed ? 'film-card__controls-item--active' : '';
@@ -114,7 +114,7 @@ export const createPopupTemplate = (film = {}) => {
               <tr class="film-details__row">
                 <td class="film-details__term">Genres</td>
                 <td class="film-details__cell">
-                  <span class="film-details__genre">${genres.join(`</span><span class="film-details__genre">`)}</span>
+                  <span class="film-details__genre">${genres.join('</span><span class="film-details__genre">')}</span>
                 </td>
               </tr>
             </table>
