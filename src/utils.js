@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -34,4 +36,25 @@ export const getRandomArraySize = (min, max, array, isToString = true) => {
     return new Array(getRandomInteger(min, max)).fill().map(() => getRandomArrayElement(array)).join(' ');
   }
   return new Array(getRandomInteger(min, max)).fill().map(() => getRandomArrayElement(array));
+};
+
+export const getTruncatedText = (text) => {
+  if (text.length > 139) {
+    const truncatedText = text.substring(0, 139) + '...';
+    return truncatedText;
+  }
+  return text;
+};
+
+export const getRandomDate = (start, end, format = 'YYYY/MM/DD HH:mm') => {
+  const newDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+  return dayjs(newDate).format(format);
+};
+
+export const formatFilmCardDate = (date) => {
+  return dayjs(date).format('YYYY');
+};
+
+export const formatFilmPopupDate = (date) => {
+  return dayjs(date).format('DD MMMM YYYY');
 };

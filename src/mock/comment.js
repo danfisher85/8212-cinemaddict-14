@@ -1,12 +1,14 @@
 import {NAMES, COMMENTS, EMOJIS} from '../const.js';
-import {getRandomInteger, getRandomArrayElement, getUniqId} from '../utils.js';
+import {getRandomInteger, getRandomArrayElement, getUniqId, getRandomDate} from '../utils.js';
+
+console.log(getRandomDate(new Date(2015, 12, 31), new Date()));
 
 const generateComment = (id) => {
   return {
     id: `comment${id}`,
     author: `${getRandomArrayElement(NAMES)}`,
     comment: `${getRandomArrayElement(COMMENTS)}`,
-    data: '2019/12/31 23:59',
+    date: getRandomDate(new Date(2020, 12, 31), new Date()),
     emoji: `${getRandomArrayElement(EMOJIS)}`,
   };
 };

@@ -1,3 +1,6 @@
+import {EMOJIS} from '../const.js';
+import {formatFilmPopupDate} from '../utils.js';
+
 const createCommentTemplate = (comment) => {
   return Object.values(comment).map(({id, text, emoji, author, date}) => `<li class="film-details__comment" id="comment${id}">
     <span class="film-details__comment-emoji">
@@ -15,14 +18,7 @@ const createCommentTemplate = (comment) => {
 };
 
 const createEmojiTemplate = () => {
-  const emojis = [
-    'smile',
-    'sleeping',
-    'puke',
-    'angry',
-  ];
-
-  return emojis.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
+  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
     <label class="film-details__emoji-label" for="emoji-${emoji}">
       <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
     </label>`).join('');
@@ -116,7 +112,7 @@ export const createPopupTemplate = (film = {}) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${releaseDate}</td>
+                <td class="film-details__cell">${formatFilmPopupDate(releaseDate)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>

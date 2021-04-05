@@ -1,5 +1,5 @@
 import {TITLES, POSTERS, DIRECTORS, AUDIENCERATINGS, SENTENCES, GENRES, WRITERS, ACTORS, RELEASEDATES} from '../const.js';
-import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArraySize, getHumanizedDuration} from '../utils.js';
+import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArraySize, getHumanizedDuration, getRandomDate} from '../utils.js';
 import {generateCommentsList} from './comment.js';
 
 export const generateFilmCard = () => {
@@ -12,7 +12,7 @@ export const generateFilmCard = () => {
     audienceRating: getRandomInteger(AUDIENCERATINGS),
     poster: getRandomArrayElement(POSTERS),
     rating: getRandomFloat(1, 10),
-    releaseDate: getRandomArrayElement(RELEASEDATES),
+    releaseDate: getRandomDate(new Date(1910, 12, 31), new Date()),
     duration: getHumanizedDuration(getRandomInteger(45, 180)),
     genres: getRandomArraySize(1, 5, GENRES, false),
     description: getRandomArraySize(1, 5, SENTENCES),
