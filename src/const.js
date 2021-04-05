@@ -112,3 +112,18 @@ export const ACTORS = [
   'Clark Gable',
   'Ingrid Bergman',
 ];
+
+export const RELEASEDATES = [
+  '1920',
+  '1928',
+  '1933',
+  '1945',
+  '1960',
+  '1984',
+  '1996',
+  '1999',
+  '2000',
+  '2012',
+  '2015',
+  '2020',
+]
