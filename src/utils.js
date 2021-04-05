@@ -1,11 +1,15 @@
-export const getRandomInteger = (a = 0, b = 1, isFloor = true) => {
+export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
-  const num = lower + Math.random() * (upper - lower + 1);
 
-  if (isFloor) {
-    return Math.floor(num);
-  }
+  return Math.floor(lower + Math.random() * (upper - lower + 1));
+};
+
+export const getRandomFloat = (a = 1, b = 0) => {
+  const lower = Math.min(a, b);
+  const upper = Math.max(a, b);
+  const num = lower + Math.random() * (upper - lower);
+
   return +num.toFixed(1);
 };
 
