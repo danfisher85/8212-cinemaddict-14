@@ -11,6 +11,7 @@ import {createPopupTemplate} from './view/popup.js';
 import {createFooterStatsTemplate} from './view/footer-stats.js';
 
 // Mocks
+import {generateUserRating} from './mock/user-rating.js';
 import {generateFilmCard} from './mock/film.js';
 
 const FILM_COUNT = 20;
@@ -26,7 +27,7 @@ const render = (container, template, place) => {
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
-render(siteHeaderElement, createProfileTemplate(), 'beforeend');
+render(siteHeaderElement, createProfileTemplate(generateUserRating()), 'beforeend');
 render(siteMainElement, createMainNavTemplate(), 'beforeend');
 render(siteMainElement, createFilterTemplate(), 'beforeend');
 
