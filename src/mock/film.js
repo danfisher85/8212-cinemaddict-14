@@ -1,4 +1,4 @@
-import {TITLES, POSTERS, DIRECTORS, AUDIENCERATINGS, SENTENCES, GENRES, WRITERS, ACTORS, RELEASEDATES} from '../const.js';
+import {TITLES, POSTERS, DIRECTORS, AUDIENCERATINGS, SENTENCES, GENRES, WRITERS, ACTORS} from '../const.js';
 import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArraySize, getHumanizedDuration, getRandomDate} from '../utils.js';
 import {generateCommentsList} from './comment.js';
 

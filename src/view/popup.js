@@ -37,7 +37,6 @@ export const createPopupTemplate = (film = {}) => {
     ],
     country = 'USA',
     description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.',
-    comments = [],
     isWatchListed = false,
     isWatched = false,
     isFavorite = false,

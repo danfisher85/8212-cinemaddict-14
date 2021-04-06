@@ -47,7 +47,7 @@ export const getTruncatedText = (text) => {
 };
 
 export const getRandomDate = (start, end, format = 'YYYY/MM/DD HH:mm') => {
-  const newDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+  const newDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   return dayjs(newDate).format(format);
 };
 
