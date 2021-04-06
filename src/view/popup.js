@@ -1,21 +1,7 @@
 import {EMOJIS} from '../const.js';
 import {formatFilmPopupDate} from '../utils.js';
-
-const createCommentTemplate = (comment) => {
-  return Object.values(comment).map(({id, text, emoji, author, date}) => `<li class="film-details__comment" id="comment${id}">
-    <span class="film-details__comment-emoji">
-      <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
-    </span>
-    <div>
-      <p class="film-details__comment-text">${text}</p>
-      <p class="film-details__comment-info">
-        <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${date}</span>
-        <button class="film-details__comment-delete">Delete</button>
-      </p>
-    </div>
-  </li>`).join('');
-};
+import {generateCommentsList} from '../mock/comment.js';
+import {createCommentTemplate} from '../view/comment.js';
 
 const createEmojiTemplate = () => {
   return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
@@ -51,15 +37,7 @@ export const createPopupTemplate = (film = {}) => {
     ],
     country = 'USA',
     description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.',
-    comments = [
-      {
-        id: 1,
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        emoji: 'angry',
-        author: 'John Doe',
-        date: '2019/12/31 23:59',
-      },
-    ],
+    comments = [],
     isWatchListed = false,
     isWatched = false,
     isFavorite = false,
@@ -69,8 +47,10 @@ export const createPopupTemplate = (film = {}) => {
   const watchedClassName = isWatched ? 'film-card__controls-item--active' : '';
   const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
 
-  const commentTemplate = createCommentTemplate(comments);
   const emojiTemplate = createEmojiTemplate();
+  const commentsElement = generateCommentsList();
+  const commentsElementCount = commentsElement.length;
+  const commentsTemplate = createCommentTemplate(commentsElement);
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -80,7 +60,7 @@ export const createPopupTemplate = (film = {}) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="${poster}" alt="">
+            <img class="film-details__poster-img" src="${poster}" alt="${title}">
 
             <p class="film-details__age">${audienceRating}</p>
           </div>
@@ -137,23 +117,23 @@ export const createPopupTemplate = (film = {}) => {
         </div>
 
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
-          <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ${watchListClassName}">Add to watchlist</label>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isWatchListed ? ' checked' : ''}>
+          <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ${watchListClassName}">${isWatchListed ? 'Added to watchlist' : 'Add to watchlist'}</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
-          <label for="watched" class="film-details__control-label film-details__control-label--watched ${watchedClassName}">Already watched</label>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? ' checked' : ''}>
+          <label for="watched" class="film-details__control-label film-details__control-label--watched ${watchedClassName}">${isWatched ? 'Already watched' : 'Mark as watched'}</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
-          <label for="favorite" class="film-details__control-label film-details__control-label--favorite ${favoriteClassName}">Add to favorites</label>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? ' checked': ''}>
+          <label for="favorite" class="film-details__control-label film-details__control-label--favorite ${favoriteClassName}">${isFavorite ? 'Added to favorites' : 'Add to favorites'}</label>
         </section>
       </div>
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsElementCount}</span></h3>
 
           <ul class="film-details__comments-list">
-            ${commentTemplate}
+            ${commentsTemplate}
           </ul>
 
           <div class="film-details__new-comment">

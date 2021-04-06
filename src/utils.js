@@ -31,9 +31,9 @@ export const getHumanizedDuration = (minsTotal) => {
   return hoursOutput + mins + 'm';
 };
 
-export const getRandomArraySize = (min, max, array, isToString = true) => {
+export const getRandomArraySize = (min, max, array, isToString = true, isCommaSeparator = false) => {
   if (isToString) {
-    return new Array(getRandomInteger(min, max)).fill().map(() => getRandomArrayElement(array)).join(' ');
+    return new Array(getRandomInteger(min, max)).fill().map(() => getRandomArrayElement(array)).join(isCommaSeparator ? ', ' : ' ');
   }
   return new Array(getRandomInteger(min, max)).fill().map(() => getRandomArrayElement(array));
 };
