@@ -1,6 +1,8 @@
 import {NAMES, COMMENTS, EMOJIS} from '../const.js';
 import {getRandomInteger, getRandomArrayElement, getUniqId, getRandomDate} from '../utils.js';
 
+const COMMENT_COUNT = getRandomInteger(0, 5);
+
 const generateComment = (id) => {
   return {
     id: `comment${id}`,
@@ -12,5 +14,5 @@ const generateComment = (id) => {
 };
 
 export const generateCommentsList = () => {
-  return new Array(getRandomInteger(0, 5)).fill().map(() => generateComment(getUniqId()));
+  return new Array(COMMENT_COUNT).fill().map(() => generateComment(getUniqId()));
 };

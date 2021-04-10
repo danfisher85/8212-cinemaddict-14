@@ -1,14 +1,15 @@
 import {TITLES, POSTERS, DIRECTORS, AUDIENCERATINGS, SENTENCES, GENRES, WRITERS, ACTORS} from '../const.js';
 import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArraySize, getHumanizedDuration, getRandomDate} from '../utils.js';
-import {generateCommentsList} from './comment.js';
 
-const getRandomCommentsId = () => {
-  return Object.values(generateCommentsList()).map(({id}) => id);
+const getRandomCommentsId = (comments) => {
+  const length = comments.length;
+
+  return new Array(length).fill().map(() => {
+    return comments.length ? comments[getRandomInteger(0, comments.length - 1)].id : '';
+  });
 };
 
-const getRandomComments = getRandomCommentsId();
-
-export const generateFilmCard = () => {
+const generateFilmCard = (comments) => {
   return {
     title: getRandomArrayElement(TITLES),
     originalTitle: getRandomArrayElement(TITLES),
@@ -22,9 +23,13 @@ export const generateFilmCard = () => {
     duration: getHumanizedDuration(getRandomInteger(45, 180)),
     genres: getRandomArraySize(1, 5, GENRES, false),
     description: getRandomArraySize(1, 5, SENTENCES),
-    comments: getRandomArraySize(0, getRandomComments.length, getRandomComments, false),
+    comments: new Set(getRandomCommentsId(comments)),
     isWatchListed: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
   };
+};
+
+export const generateFilms = (count, comments) => {
+  return new Array(count).fill().map(() => generateFilmCard(comments));
 };
