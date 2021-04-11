@@ -55,12 +55,17 @@ const renderFilm = (filmListElement, film) => {
   const filmCard = new FilmView(film);
 
   const onFilmCardItemsClick = () => {
+    document.body.classList.add('hide-overflow');
+
     const filmPopup = new PopupView(film, comments);
+    const filmPopupHandler = () => {
+      document.body.classList.remove('hide-overflow');
+      document.body.removeChild(filmPopup.getElement());
+    };
+
     const filmPopupClose = filmPopup.getElement().querySelector('.film-details__close-btn');
-    filmPopupClose.addEventListener('click', () => {
-      console.log('close it!');
-    });
-    render(document.body, filmPopup.getElement(), RenderPosition.BEFOREEND);
+    filmPopupClose.addEventListener('click', filmPopupHandler);
+    document.body.appendChild(filmPopup.getElement());
   }
 
   filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', onFilmCardItemsClick);
