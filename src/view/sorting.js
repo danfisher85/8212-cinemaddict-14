@@ -28,4 +28,4 @@ export default class Sorting {
   removeElement() {
     this._element = null;
   }
-};
+}

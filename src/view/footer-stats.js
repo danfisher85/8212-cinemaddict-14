@@ -27,4 +27,4 @@ export default class FooterStats {
   removeElement() {
     this._element = null;
   }
-};
+}

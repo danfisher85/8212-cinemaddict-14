@@ -25,4 +25,4 @@ export default class FilmsContainer {
   removeElement() {
     this._element = null;
   }
-};
+}

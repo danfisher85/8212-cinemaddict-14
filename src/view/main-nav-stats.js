@@ -24,4 +24,4 @@ export default class NavStats {
   removeElement() {
     this._element = null;
   }
-};
+}

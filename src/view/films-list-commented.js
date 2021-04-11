@@ -27,4 +27,4 @@ export default class FilmsListCommented {
   removeElement() {
     this._element = null;
   }
-};
+}

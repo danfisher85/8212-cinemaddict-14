@@ -74,4 +74,4 @@ export default class Film {
   removeElement() {
     this._element = null;
   }
-};
+}

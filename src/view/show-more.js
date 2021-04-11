@@ -25,4 +25,4 @@ export default class ShowMore {
   removeElement() {
     this._element = null;
   }
-};
+}

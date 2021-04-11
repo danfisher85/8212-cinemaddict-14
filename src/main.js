@@ -47,7 +47,6 @@ render(siteMainNavElement, new NavStatsView().getElement(), RenderPosition.BEFOR
 render(siteMainElement, new FilmsContainerView().getElement(), RenderPosition.BEFOREEND);
 
 
-
 // Films
 const filmsElement = siteMainElement.querySelector('.films');
 
@@ -66,7 +65,7 @@ const renderFilm = (filmListElement, film) => {
     const filmPopupClose = filmPopup.getElement().querySelector('.film-details__close-btn');
     filmPopupClose.addEventListener('click', filmPopupHandler);
     document.body.appendChild(filmPopup.getElement());
-  }
+  };
 
   filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', onFilmCardItemsClick);
   filmCard.getElement().querySelector('.film-card__title').addEventListener('click', onFilmCardItemsClick);

@@ -33,4 +33,4 @@ export default class ProfileHeader {
   removeElement() {
     this._element = null;
   }
-};
+}

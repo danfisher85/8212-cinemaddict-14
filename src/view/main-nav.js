@@ -25,4 +25,4 @@ export default class MainNav {
   removeElement() {
     this._element = null;
   }
-};
+}
