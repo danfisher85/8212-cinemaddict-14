@@ -11,7 +11,7 @@ import FilmView from './view/film-card.js';
 import ShowMoreView from './view/show-more.js';
 import PopupView from './view/popup.js';
 import FooterStatsView from './view/footer-stats.js';
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition, sortFilmsByRating, sortFilmsByComments} from './utils.js';
 
 // Mocks
 import {generateUserRating} from './mock/user-rating.js';
@@ -31,8 +31,8 @@ const films = generateFilms(FILM_COUNT, comments);
 const filters = generateFilter(films);
 const footerStats = generateFooterStats(films);
 
-const filmsTopRated = films.slice().sort((a, b) => a.rating > b.rating ? -1 : 1);
-const filmsTopCommented = films.slice().sort((a, b) => a.comments.length > b.comments.length ? -1 : 1);
+const filmsTopRated = sortFilmsByRating(films);
+const filmsTopCommented = sortFilmsByComments(films);
 
 const siteHeaderElement = document.querySelector('.header');
 render(siteHeaderElement, new HeaderProfileView(generateUserRating()).getElement(), RenderPosition.BEFOREEND);
@@ -51,13 +51,32 @@ render(siteMainElement, new FilmsContainerView().getElement(), RenderPosition.BE
 // Films
 const filmsElement = siteMainElement.querySelector('.films');
 
+const renderFilm = (filmListElement, film) => {
+  const filmCard = new FilmView(film);
+
+  const onFilmCardItemsClick = () => {
+    const filmPopup = new PopupView(film, comments);
+    const filmPopupClose = filmPopup.getElement().querySelector('.film-details__close-btn');
+    filmPopupClose.addEventListener('click', () => {
+      console.log('close it!');
+    });
+    render(document.body, filmPopup.getElement(), RenderPosition.BEFOREEND);
+  }
+
+  filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', onFilmCardItemsClick);
+  filmCard.getElement().querySelector('.film-card__title').addEventListener('click', onFilmCardItemsClick);
+  filmCard.getElement().querySelector('.film-card__comments').addEventListener('click', onFilmCardItemsClick);
+
+  render(filmListElement, filmCard.getElement(), RenderPosition.BEFOREEND);
+};
+
 // Films List
 render(filmsElement, new FilmsListView().getElement(), RenderPosition.BEFOREEND);
 const filmsListAllElement = filmsElement.querySelector('.films-list--all');
 const filmsListContainerElement = filmsListAllElement.querySelector('.films-list__container');
 
 for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
-  render(filmsListContainerElement, new FilmView(films[i]).getElement(), RenderPosition.BEFOREEND);
+  renderFilm(filmsListContainerElement, films[i]);
 }
 
 if (films.length > FILM_COUNT_PER_STEP) {
@@ -71,7 +90,7 @@ if (films.length > FILM_COUNT_PER_STEP) {
     evt.preventDefault();
     films
       .slice(renderedFilmsCount, renderedFilmsCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => render(filmsListContainerElement, new FilmView(film).getElement(), RenderPosition.BEFOREEND));
+      .forEach((film) => renderFilm(filmsListContainerElement, film));
 
     renderedFilmsCount += FILM_COUNT_PER_STEP;
 
@@ -86,7 +105,7 @@ render(filmsElement, new FilmsListTopView().getElement(), RenderPosition.BEFOREE
 const filmsListTopContainerElement = filmsElement.querySelector('.films-list--top .films-list__container');
 
 for (let i = 0; i < TOP_RATED_COUNT; i++) {
-  render(filmsListTopContainerElement, new FilmView(filmsTopRated[i]).getElement(), RenderPosition.BEFOREEND);
+  renderFilm(filmsListTopContainerElement, filmsTopRated[i]);
 }
 
 // Films Most Commented
@@ -94,12 +113,9 @@ render(filmsElement, new FilmsListCommentedView().getElement(), RenderPosition.B
 const filmsListCommentedContainerElement = filmsElement.querySelector('.films-list--commented .films-list__container');
 
 for (let i = 0; i < COMMENTED_COUNT; i++) {
-  render(filmsListCommentedContainerElement, new FilmView(filmsTopCommented[i]).getElement(), RenderPosition.BEFOREEND);
+  renderFilm(filmsListCommentedContainerElement, filmsTopCommented[i]);
 }
 
 // Footer Stats
 const siteFooterElement = document.querySelector('.footer');
 render(siteFooterElement, new FooterStatsView(footerStats).getElement(), RenderPosition.BEFOREEND);
-
-// Popup
-// render(siteFooterElement, new PopupView(films[0], comments).getElement(), RenderPosition.BEFOREEND);

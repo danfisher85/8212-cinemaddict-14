@@ -81,3 +81,11 @@ export const formatFilmCardDate = (date) => {
 export const formatFilmPopupDate = (date) => {
   return dayjs(date).format('DD MMMM YYYY');
 };
+
+export const sortFilmsByRating = (films) => {
+  return films.slice().sort((a, b) => a.rating > b.rating ? -1 : 1);
+};
+
+export const sortFilmsByComments = (films) => {
+  return films.slice().sort((a, b) => a.comments.size > b.comments.size ? -1 : 1);
+};
