@@ -1,8 +1,8 @@
-import {getTruncatedText, formatFilmCardDate} from '../utils.js';
+import {getTruncatedText, formatFilmCardDate, createElement} from '../utils.js';
 
 const commentCountTemplate = (comments) => {
   let commentResult = '';
-  const commentLength = comments.length;
+  const commentLength = comments.size;
   if (commentLength === 1) {
     commentResult = commentLength + ' comment';
   } else if (commentLength > 1) {
@@ -14,7 +14,7 @@ const commentCountTemplate = (comments) => {
   return commentResult;
 };
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {
     title,
     poster,
@@ -52,3 +52,26 @@ export const createFilmCardTemplate = (film) => {
     </div>
   </article>`;
 };
+
+export default class Film {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

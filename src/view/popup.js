@@ -1,7 +1,5 @@
 import {EMOJIS} from '../const.js';
-import {formatFilmPopupDate} from '../utils.js';
-import {generateCommentsList} from '../mock/comment.js';
-import {createCommentTemplate} from '../view/comment.js';
+import {formatFilmPopupDate, createElement} from '../utils.js';
 
 const createEmojiTemplate = () => {
   return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
@@ -10,7 +8,23 @@ const createEmojiTemplate = () => {
     </label>`).join('');
 };
 
-export const createPopupTemplate = (film = {}) => {
+const createCommentTemplate = (comments) => {
+  return Object.values(comments).map(({id, author, comment, emoji, date}) => `<li class="film-details__comment" id="${id}">
+    <span class="film-details__comment-emoji">
+      <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
+    </span>
+    <div>
+      <p class="film-details__comment-text">${comment}</p>
+      <p class="film-details__comment-info">
+        <span class="film-details__comment-author">${author}</span>
+        <span class="film-details__comment-day">${date}</span>
+        <button class="film-details__comment-delete">Delete</button>
+      </p>
+    </div>
+  </li>`).join('');
+};
+
+const createPopupTemplate = (film = {}, commentItems) => {
   const {
     title = 'Made For Each Other',
     originalTitle = 'Made For Each Other',
@@ -35,6 +49,7 @@ export const createPopupTemplate = (film = {}) => {
       'Film-Noir',
       'Mystery',
     ],
+    comments = [],
     country = 'USA',
     description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.',
     isWatchListed = false,
@@ -47,9 +62,12 @@ export const createPopupTemplate = (film = {}) => {
   const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
 
   const emojiTemplate = createEmojiTemplate();
-  const commentsElement = generateCommentsList();
-  const commentsElementCount = commentsElement.length;
-  const commentsTemplate = createCommentTemplate(commentsElement);
+  const filmComments = commentItems.filter((comment) => {
+    return comments.has(comment.id);
+  });
+  const commentsTemplate = createCommentTemplate(filmComments);
+  const commentsElementCount = comments.size;
+
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -151,3 +169,27 @@ export const createPopupTemplate = (film = {}) => {
     </form>
   </section>`;
 };
+
+export default class Popup {
+  constructor(film, comments) {
+    this._film = film;
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
