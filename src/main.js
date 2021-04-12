@@ -42,8 +42,6 @@ const siteMainNavElement = document.querySelector('.main-navigation');
 render(siteMainNavElement, new FilterView(filters).getElement(), RenderPosition.BEFOREEND);
 render(siteMainNavElement, new NavStatsView().getElement(), RenderPosition.BEFOREEND);
 
-render(siteMainElement, new FilmsContainerView().getElement(), RenderPosition.BEFOREEND);
-
 // Film
 const renderFilm = (filmListElement, film) => {
   const filmCard = new FilmView(film);
@@ -83,11 +81,13 @@ const renderFilm = (filmListElement, film) => {
 };
 
 // Films List
-if (films.length === 0) {
-  render(siteMainElement, new NoFilmView().getElement(), RenderPosition.BEFOREEND);
-} else {
+const renderFilms = (filmsElement, films) => {
+  if (films.length === 0) {
+    render(siteMainElement, new NoFilmView().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
+
   render(siteMainElement, new SortingView().getElement(), RenderPosition.BEFOREEND);
-  const filmsElement = siteMainElement.querySelector('.films');
   render(filmsElement, new FilmsListView().getElement(), RenderPosition.BEFOREEND);
   const filmsListAllElement = filmsElement.querySelector('.films-list--all');
   const filmsListContainerElement = filmsListAllElement.querySelector('.films-list__container');
@@ -134,7 +134,11 @@ if (films.length === 0) {
   for (let i = 0; i < COMMENTED_COUNT; i++) {
     renderFilm(filmsListCommentedContainerElement, filmsTopCommented[i]);
   }
-}
+};
+
+const filmsContainer = new FilmsContainerView();
+render(siteMainElement, filmsContainer.getElement(), RenderPosition.BEFOREEND);
+renderFilms(filmsContainer.getElement(), films);
 
 // Footer Stats
 const siteFooterElement = document.querySelector('.footer');
