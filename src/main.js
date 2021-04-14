@@ -87,7 +87,7 @@ const renderFilms = (filmsElement, films) => {
     return;
   }
 
-  render(siteMainElement, new SortingView().getElement(), RenderPosition.BEFOREEND);
+  render(filmsElement, new SortingView().getElement(), RenderPosition.BEFOREEND);
   render(filmsElement, new FilmsListView().getElement(), RenderPosition.BEFOREEND);
   const filmsListAllElement = filmsElement.querySelector('.films-list--all');
   const filmsListContainerElement = filmsListAllElement.querySelector('.films-list__container');
