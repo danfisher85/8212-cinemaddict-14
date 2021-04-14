@@ -1,5 +1,6 @@
 import {NAMES, COMMENTS, EMOJIS} from '../const.js';
-import {getRandomInteger, getRandomArrayElement, getUniqId, getRandomDate} from '../utils.js';
+import {getRandomInteger, getRandomArrayElement, getUniqId} from '../utils/common.js';
+import {getRandomDate} from '../utils/film.js';
 
 const COMMENT_COUNT = getRandomInteger(0, 5);
 

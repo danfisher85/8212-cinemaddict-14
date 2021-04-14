@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import {getTruncatedText, formatFilmCardDate} from '../utils.js';
+import {getTruncatedText, formatFilmCardDate} from '../utils/film.js';
 
 const commentCountTemplate = (comments) => {
   let commentResult = '';

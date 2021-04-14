@@ -1,5 +1,5 @@
 import {EMOJIS} from '../const.js';
-import {formatFilmPopupDate} from '../utils.js';
+import {formatFilmPopupDate} from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const createEmojiTemplate = () => {

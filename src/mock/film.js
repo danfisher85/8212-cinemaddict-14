@@ -1,5 +1,6 @@
 import {TITLES, POSTERS, DIRECTORS, AUDIENCERATINGS, SENTENCES, GENRES, WRITERS, ACTORS} from '../const.js';
-import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArraySize, getHumanizedDuration, getRandomDate} from '../utils.js';
+import {getHumanizedDuration, getRandomDate} from '../utils/film.js';
+import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArraySize} from '../utils/common.js';
 
 const getRandomCommentsId = (comments) => {
   const length = comments.length;
