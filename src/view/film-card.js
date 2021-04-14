@@ -1,4 +1,5 @@
-import {getTruncatedText, formatFilmCardDate, createElement} from '../utils.js';
+import AbstractView from './abstract.js';
+import {getTruncatedText, formatFilmCardDate} from '../utils.js';
 
 const commentCountTemplate = (comments) => {
   let commentResult = '';
@@ -53,25 +54,13 @@ const createFilmCardTemplate = (film) => {
   </article>`;
 };
 
-export default class Film {
+export default class Film extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
