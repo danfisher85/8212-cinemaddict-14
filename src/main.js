@@ -46,36 +46,30 @@ render(siteMainNavElement, new NavStatsView().getElement(), RenderPosition.BEFOR
 const renderFilm = (filmListElement, film) => {
   const filmCard = new FilmView(film);
 
-  const filmPopupHandler = (element) => {
+  const closePopupHandler = (element) => {
     document.body.classList.remove('hide-overflow');
     document.body.removeChild(element.getElement());
   };
 
-  const onFilmCardItemsClick = () => {
+  filmCard.setItemsClickHandler(() => {
     document.body.classList.add('hide-overflow');
-
     const filmPopup = new PopupView(film, comments);
-    const filmPopupClose = filmPopup.getElement().querySelector('.film-details__close-btn');
 
-    filmPopupClose.addEventListener('click', () => {
-      filmPopupHandler(filmPopup);
+    filmPopup.setCloseClickHandler(() => {
+      closePopupHandler(filmPopup);
     });
 
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
-        filmPopupHandler(filmPopup);
+        closePopupHandler(filmPopup);
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
     document.addEventListener('keydown', onEscKeyDown);
 
     document.body.appendChild(filmPopup.getElement());
-  };
-
-  filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', onFilmCardItemsClick);
-  filmCard.getElement().querySelector('.film-card__title').addEventListener('click', onFilmCardItemsClick);
-  filmCard.getElement().querySelector('.film-card__comments').addEventListener('click', onFilmCardItemsClick);
+  });
 
   render(filmListElement, filmCard.getElement(), RenderPosition.BEFOREEND);
 };
@@ -99,12 +93,10 @@ const renderFilms = (filmsElement, films) => {
   if (films.length > FILM_COUNT_PER_STEP) {
     let renderedFilmsCount = FILM_COUNT_PER_STEP;
 
-    render(filmsListAllElement, new ShowMoreView().getElement(), RenderPosition.BEFOREEND);
+    const showMoreButton = new ShowMoreView();
+    render(filmsListAllElement, showMoreButton.getElement(), RenderPosition.BEFOREEND);
 
-    const showMoreButton = filmsElement.querySelector('.films-list__show-more');
-
-    showMoreButton.addEventListener('click', (evt) => {
-      evt.preventDefault();
+    showMoreButton.setClickHandler(() => {
       films
         .slice(renderedFilmsCount, renderedFilmsCount + FILM_COUNT_PER_STEP)
         .forEach((film) => renderFilm(filmsListContainerElement, film));
@@ -112,7 +104,7 @@ const renderFilms = (filmsElement, films) => {
       renderedFilmsCount += FILM_COUNT_PER_STEP;
 
       if (renderedFilmsCount >= films.length) {
-        showMoreButton.remove();
+        showMoreButton.getElement().remove();
       }
     });
   }
