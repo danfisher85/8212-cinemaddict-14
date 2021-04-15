@@ -1,4 +1,5 @@
-import {getTruncatedText, formatFilmCardDate, createElement} from '../utils.js';
+import AbstractView from './abstract.js';
+import {getTruncatedText, formatFilmCardDate} from '../utils/film.js';
 
 const commentCountTemplate = (comments) => {
   let commentResult = '';
@@ -53,25 +54,28 @@ const createFilmCardTemplate = (film) => {
   </article>`;
 };
 
-export default class Film {
+export default class Film extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+
+    this._itemsClickHandler = this._itemsClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _itemsClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.itemsClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setItemsClickHandler(callback) {
+    this._callback.itemsClick = callback;
+
+    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._itemsClickHandler);
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._itemsClickHandler);
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._itemsClickHandler);
   }
 }

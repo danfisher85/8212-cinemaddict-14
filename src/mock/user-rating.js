@@ -1,5 +1,5 @@
 import {USER_RATINGS} from '../const.js';
-import {getRandomArrayElement} from '../utils.js';
+import {getRandomArrayElement} from '../utils/common.js';
 
 export const generateUserRating = () => {
   return {
