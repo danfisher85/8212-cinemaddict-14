@@ -1,6 +1,6 @@
 import FilmView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
-import {render, RenderPosition} from '../utils/render.js';
+import {render, RenderPosition, replace, remove} from '../utils/render.js';
 
 export default class Film {
   constructor(filmListContainer) {
@@ -17,12 +17,27 @@ export default class Film {
     this._film = film;
     this._comments = comments;
 
+    const prevFilmComponent = this._filmComponent;
+
     this._filmComponent = new FilmView(film);
     this._popupComponent = new PopupView(film, comments);
 
     this._filmComponent.setItemsClickHandler(this._handleItemsClick);
 
-    render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
+    if (prevFilmComponent === null) {
+      render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this._filmListContainer.getElement().contains(prevFilmComponent.getElement())) {
+      replace(this._filmComponent, prevFilmComponent);
+    }
+
+    remove(prevFilmComponent);
+  }
+
+  destroy() {
+    remove(this._filmComponent);
   }
 
   _closePopupHandler() { // closePopupHandler
