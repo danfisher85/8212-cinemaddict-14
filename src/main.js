@@ -15,9 +15,6 @@ import {generateFilter} from './mock/filter.js';
 import {generateFooterStats} from './mock/footer-stats.js';
 
 const FILM_COUNT = 20;
-const FILM_COUNT_PER_STEP = 5;
-const TOP_RATED_COUNT = 2;
-const COMMENTED_COUNT = 2;
 
 const comments = generateCommentsList();
 const films = generateFilms(FILM_COUNT, comments);
