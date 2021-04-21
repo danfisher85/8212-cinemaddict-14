@@ -7,7 +7,8 @@ import FilmsListInnerView from '../view/films-list-inner.js';
 import ShowMoreView from '../view/show-more.js';
 import FilmsListTopView from '../view/films-list-top.js';
 import FilmsListCommentedView from '../view/films-list-commented.js';
-import PopupView from '../view/popup.js';
+import FilmPresenter from './film.js';
+
 import {render, RenderPosition, remove} from '../utils/render.js';
 
 const FILM_COUNT_PER_STEP = 5;
@@ -43,34 +44,8 @@ export default class FilmList {
   }
 
   _renderFilm(film) {
-    const filmComponent = new FilmView(film);
-
-    const closePopupHandler = (element) => {
-      document.body.classList.remove('hide-overflow');
-      document.body.removeChild(element.getElement());
-    };
-
-    filmComponent.setItemsClickHandler(() => {
-      document.body.classList.add('hide-overflow');
-      const filmPopup = new PopupView(film, this._comments);
-
-      filmPopup.setCloseClickHandler(() => {
-        closePopupHandler(filmPopup);
-      });
-
-      const onEscKeyDown = (evt) => {
-        if (evt.key === 'Escape' || evt.key === 'Esc') {
-          evt.preventDefault();
-          closePopupHandler(filmPopup);
-          document.removeEventListener('keydown', onEscKeyDown);
-        }
-      };
-      document.addEventListener('keydown', onEscKeyDown);
-
-      document.body.appendChild(filmPopup.getElement());
-    });
-
-    render(this._filmListInnerComponent, filmComponent, RenderPosition.BEFOREEND);
+    const filmPresenter = new FilmPresenter(this._filmListInnerComponent);
+    filmPresenter.init(film, this._comments);
   }
 
   _renderFilms(from, to) {
