@@ -10,6 +10,7 @@ import FilmsListCommentedView from '../view/films-list-commented.js';
 import FilmsListCommentedInnerView from '../view/films-list-commented-inner.js';
 import {sortFilmsByRating, sortFilmsByComments} from '../utils/film.js';
 import FilmPresenter from './film.js';
+import {updateItem} from '../utils/common.js';
 
 import {render, RenderPosition, remove} from '../utils/render.js';
 
@@ -40,15 +41,18 @@ export default class FilmList {
     this._filmListCommentedComponent = new FilmsListCommentedView();
     this._filmListCommentedInnerComponent = new FilmsListCommentedInnerView();
 
+    this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handlePopupMode = this._handlePopupMode.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
-  init(films, comments) {
+  init(films) {
     this._films = films.slice();
-    this._comments = comments.slice();
 
-    this._filmsTop = sortFilmsByRating(films);
-    this._filmsCommented = sortFilmsByComments(films);
+    this._filmsTop = sortFilmsByRating(films.slice());
+    this._filmsCommented = sortFilmsByComments(films.slice());
+
+    this._filmPresenter = {};
 
     // Regular
     render(this._filmListContainer, this._filmHolder, RenderPosition.BEFOREEND); // .films
@@ -72,9 +76,21 @@ export default class FilmList {
     render(this._filmHolder, this._sortComponent, RenderPosition.BEFOREBEGIN);
   }
 
-  _renderFilm(film, place) {
-    const filmPresenter = new FilmPresenter(place);
-    filmPresenter.init(film, this._comments);
+  _handleFilmChange(updatedFilm) {
+    this._films = updateItem(this._films, updatedFilm);
+    this._filmPresenter[updatedFilm.id].init(updatedFilm);
+  }
+
+  _handlePopupMode() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
+  _renderFilm(film, filmContainer) {
+    const filmPresenter = new FilmPresenter(filmContainer, this._handleFilmChange, this._handlePopupMode);
+    filmPresenter.init(film);
+    this._filmPresenter[film.id] = filmPresenter;
   }
 
   _renderFilms(from, to) {
@@ -112,6 +128,16 @@ export default class FilmList {
     render(this._filmListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
 
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
+  }
+
+  _clearFilmList() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+
+    this._filmPresenter = {};
+    this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    remove(this._showMoreButtonComponent);
   }
 
   _renderFilmItems() {

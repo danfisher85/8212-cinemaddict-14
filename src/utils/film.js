@@ -34,5 +34,5 @@ export const sortFilmsByRating = (films) => {
 };
 
 export const sortFilmsByComments = (films) => {
-  return films.slice().sort((a, b) => a.comments.size > b.comments.size ? -1 : 1);
+  return films.slice().sort((a, b) => a.comments.length > b.comments.length ? -1 : 1);
 };

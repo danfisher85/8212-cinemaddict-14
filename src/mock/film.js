@@ -1,17 +1,12 @@
+import {nanoid} from 'nanoid';
 import {TITLES, POSTERS, DIRECTORS, AUDIENCERATINGS, SENTENCES, GENRES, WRITERS, ACTORS} from '../const.js';
 import {getHumanizedDuration, getRandomDate} from '../utils/film.js';
 import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArraySize} from '../utils/common.js';
+import {generateComment} from './comment.js';
 
-const getRandomCommentsId = (comments) => {
-  const length = comments.length;
-
-  return new Array(length).fill().map(() => {
-    return comments.length ? comments[getRandomInteger(0, comments.length - 1)].id : '';
-  });
-};
-
-const generateFilmCard = (comments) => {
+const generateFilmCard = () => {
   return {
+    id: nanoid(),
     title: getRandomArrayElement(TITLES),
     originalTitle: getRandomArrayElement(TITLES),
     director: getRandomArrayElement(DIRECTORS),
@@ -24,13 +19,13 @@ const generateFilmCard = (comments) => {
     duration: getHumanizedDuration(getRandomInteger(45, 180)),
     genres: getRandomArraySize(1, 5, GENRES, false),
     description: getRandomArraySize(1, 5, SENTENCES),
-    comments: new Set(getRandomCommentsId(comments)),
+    comments: new Array(getRandomInteger(0, 5)).fill().map(() => generateComment(nanoid())),
     isWatchListed: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
   };
 };
 
-export const generateFilms = (count, comments) => {
-  return new Array(count).fill().map(() => generateFilmCard(comments));
+export const generateFilms = (count) => {
+  return new Array(count).fill().map(() => generateFilmCard());
 };

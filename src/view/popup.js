@@ -25,7 +25,7 @@ const createCommentTemplate = (comments) => {
   </li>`).join('');
 };
 
-const createPopupTemplate = (film = {}, commentItems) => {
+const createPopupTemplate = (film = {}) => {
   const {
     title = 'Made For Each Other',
     originalTitle = 'Made For Each Other',
@@ -63,11 +63,8 @@ const createPopupTemplate = (film = {}, commentItems) => {
   const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
 
   const emojiTemplate = createEmojiTemplate();
-  const filmComments = commentItems.filter((comment) => {
-    return comments.has(comment.id);
-  });
-  const commentsTemplate = createCommentTemplate(filmComments);
-  const commentsElementCount = comments.size;
+  const commentsTemplate = createCommentTemplate(comments);
+  const commentsElementCount = comments.length;
 
 
   return `<section class="film-details">
@@ -172,16 +169,18 @@ const createPopupTemplate = (film = {}, commentItems) => {
 };
 
 export default class Popup extends AbstractView {
-  constructor(film, comments) {
+  constructor(film) {
     super();
     this._film = film;
-    this._comments = comments;
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film, this._comments);
+    return createPopupTemplate(this._film);
   }
 
   _closeClickHandler(evt) {
@@ -189,9 +188,36 @@ export default class Popup extends AbstractView {
     this._callback.closeClick();
   }
 
+  _favoriteClickHandler() {
+    this._callback.favoriteClick();
+  }
+
+  _watchlistClickHandler() {
+    this._callback.watchlistClick();
+  }
+
+  _watchedClickHandler() {
+    this._callback.watchedClick();
+  }
+
   setCloseClickHandler(callback) {
     this._callback.closeClick = callback;
 
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._watchlistClickHandler);
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._watchedClickHandler);
   }
 }
