@@ -36,3 +36,11 @@ export const sortFilmsByRating = (films) => {
 export const sortFilmsByComments = (films) => {
   return films.slice().sort((a, b) => a.comments.length > b.comments.length ? -1 : 1);
 };
+
+export const sortFilmDate = (filmA, filmB) => {
+  return dayjs(filmB.releaseDate).diff(dayjs(filmA.releaseDate));
+};
+
+export const sortFilmRating = (filmA, filmB) => {
+  return filmA.rating > filmB.rating ? -1 : 1;
+};

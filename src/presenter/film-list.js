@@ -8,9 +8,10 @@ import FilmsListTopView from '../view/films-list-top.js';
 import FilmsListTopInnerView from '../view/films-list-top-inner.js';
 import FilmsListCommentedView from '../view/films-list-commented.js';
 import FilmsListCommentedInnerView from '../view/films-list-commented-inner.js';
-import {sortFilmsByRating, sortFilmsByComments} from '../utils/film.js';
+import {sortFilmsByRating, sortFilmsByComments, sortFilmDate, sortFilmRating} from '../utils/film.js';
 import FilmPresenter from './film.js';
 import {updateItem} from '../utils/common.js';
+import {SortType} from '../const.js';
 
 import {render, RenderPosition, remove} from '../utils/render.js';
 
@@ -44,15 +45,18 @@ export default class FilmList {
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handlePopupMode = this._handlePopupMode.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(films) {
     this._films = films.slice();
+    this._sourcedFilms = films.slice();
 
     this._filmsTop = sortFilmsByRating(films.slice());
     this._filmsCommented = sortFilmsByComments(films.slice());
 
     this._filmPresenter = {};
+    this._currentSortType = SortType.DEFAULT;
 
     // Regular
     render(this._filmListContainer, this._filmHolder, RenderPosition.BEFOREEND); // .films
@@ -68,16 +72,43 @@ export default class FilmList {
     render(this._filmListCommentedComponent, this._filmListCommentedInnerComponent, RenderPosition.BEFOREEND);
 
     this._renderFilmList();
-    this._renderFilmTopList();
-    this._renderFilmCommentedList();
+    // this._renderFilmTopList();
+    // this._renderFilmCommentedList();
+  }
+
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._films.sort(sortFilmDate);
+        break;
+      case SortType.RATING:
+        this._films.sort(sortFilmRating);
+        break;
+      default:
+        this._films = this._sourcedFilms.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearFilmList();
+    this._renderFilmItems();
   }
 
   _renderSort() {
     render(this._filmHolder, this._sortComponent, RenderPosition.BEFOREBEGIN);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _handleFilmChange(updatedFilm) {
     this._films = updateItem(this._films, updatedFilm);
+    this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
   }
 
