@@ -4,11 +4,7 @@ import FilmHolderView from '../view/films.js';
 import FilmsListView from '../view/films-list.js';
 import FilmsListInnerView from '../view/films-list-inner.js';
 import ShowMoreView from '../view/show-more.js';
-import FilmsListTopView from '../view/films-list-top.js';
-import FilmsListTopInnerView from '../view/films-list-top-inner.js';
-import FilmsListCommentedView from '../view/films-list-commented.js';
-import FilmsListCommentedInnerView from '../view/films-list-commented-inner.js';
-import {sortFilmsByRating, sortFilmsByComments, sortFilmDate, sortFilmRating} from '../utils/film.js';
+import {sortFilmDate, sortFilmRating} from '../utils/film.js';
 import FilmPresenter from './film.js';
 import {updateItem} from '../utils/common.js';
 import {SortType} from '../const.js';
@@ -16,15 +12,11 @@ import {SortType} from '../const.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 
 const FILM_COUNT_PER_STEP = 5;
-const TOP_RATED_COUNT = 2;
-const COMMENTED_COUNT = 2;
 
 export default class FilmList {
   constructor(filmListContainer) {
     this._filmListContainer = filmListContainer;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    this._renderedFilmTopCount = TOP_RATED_COUNT;
-    this._renderedFilmCommentedCount = COMMENTED_COUNT;
 
     // List
     this._filmHolder = new FilmHolderView();
@@ -33,14 +25,6 @@ export default class FilmList {
     this._sortComponent = new SortingView();
     this._noFilmComponent = new NoFilmView();
     this._showMoreButtonComponent = new ShowMoreView();
-
-    // Top Rated
-    this._filmListTopComponent = new FilmsListTopView();
-    this._filmListTopInnerComponent = new FilmsListTopInnerView();
-
-    // Most Commented
-    this._filmListCommentedComponent = new FilmsListCommentedView();
-    this._filmListCommentedInnerComponent = new FilmsListCommentedInnerView();
 
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handlePopupMode = this._handlePopupMode.bind(this);
@@ -52,9 +36,6 @@ export default class FilmList {
     this._films = films.slice();
     this._sourcedFilms = films.slice();
 
-    this._filmsTop = sortFilmsByRating(films.slice());
-    this._filmsCommented = sortFilmsByComments(films.slice());
-
     this._filmPresenter = {};
     this._currentSortType = SortType.DEFAULT;
 
@@ -63,17 +44,7 @@ export default class FilmList {
     render(this._filmHolder, this._filmListComponent, RenderPosition.BEFOREEND); // .films-list
     render(this._filmListComponent, this._filmListInnerComponent, RenderPosition.BEFOREEND); // .films-list__container
 
-    // Top Rated
-    render(this._filmHolder, this._filmListTopComponent, RenderPosition.BEFOREEND);
-    render(this._filmListTopComponent, this._filmListTopInnerComponent, RenderPosition.BEFOREEND);
-
-    // Most Commented
-    render(this._filmHolder, this._filmListCommentedComponent, RenderPosition.BEFOREEND);
-    render(this._filmListCommentedComponent, this._filmListCommentedInnerComponent, RenderPosition.BEFOREEND);
-
     this._renderFilmList();
-    // this._renderFilmTopList();
-    // this._renderFilmCommentedList();
   }
 
   _sortFilms(sortType) {
@@ -130,18 +101,6 @@ export default class FilmList {
       .forEach((film) => this._renderFilm(film, this._filmListInnerComponent));
   }
 
-  _renderFilmsTop(from, to) {
-    this._filmsTop
-      .slice(from, to)
-      .forEach((film) => this._renderFilm(film, this._filmListTopInnerComponent));
-  }
-
-  _renderFilmsCommented(from, to) {
-    this._filmsCommented
-      .slice(from, to)
-      .forEach((film) => this._renderFilm(film, this._filmListCommentedInnerComponent));
-  }
-
   _renderNoFilms() {
     render(this._filmListContainer, this._noFilmComponent, RenderPosition.BEFOREEND);
   }
@@ -187,13 +146,5 @@ export default class FilmList {
 
     this._renderSort();
     this._renderFilmItems();
-  }
-
-  _renderFilmTopList() {
-    this._renderFilmsTop(0, this._renderedFilmTopCount);
-  }
-
-  _renderFilmCommentedList() {
-    this._renderFilmsCommented(0, this._renderedFilmCommentedCount);
   }
 }
