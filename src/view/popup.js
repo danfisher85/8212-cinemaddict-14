@@ -53,14 +53,14 @@ const createPopupTemplate = (film = {}) => {
     comments = [],
     country = 'USA',
     description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.',
-    isWatchListed = false,
-    isWatched = false,
-    isFavorite = false,
+    watchListed = false,
+    watched = false,
+    favorite = false,
   } = film;
 
-  const watchListClassName = isWatchListed ? 'film-card__controls-item--active' : '';
-  const watchedClassName = isWatched ? 'film-card__controls-item--active' : '';
-  const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
+  const watchListClassName = watchListed ? 'film-card__controls-item--active' : '';
+  const watchedClassName = watched ? 'film-card__controls-item--active' : '';
+  const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
 
   const emojiTemplate = createEmojiTemplate();
   const commentsTemplate = createCommentTemplate(comments);
@@ -132,14 +132,14 @@ const createPopupTemplate = (film = {}) => {
         </div>
 
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isWatchListed ? ' checked' : ''}>
-          <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ${watchListClassName}">${isWatchListed ? 'Added to watchlist' : 'Add to watchlist'}</label>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchListed ? ' checked' : ''}>
+          <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ${watchListClassName}">${watchListed ? 'Added to watchlist' : 'Add to watchlist'}</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? ' checked' : ''}>
-          <label for="watched" class="film-details__control-label film-details__control-label--watched ${watchedClassName}">${isWatched ? 'Already watched' : 'Mark as watched'}</label>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watched ? ' checked' : ''}>
+          <label for="watched" class="film-details__control-label film-details__control-label--watched ${watchedClassName}">${watched ? 'Already watched' : 'Mark as watched'}</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? ' checked': ''}>
-          <label for="favorite" class="film-details__control-label film-details__control-label--favorite ${favoriteClassName}">${isFavorite ? 'Added to favorites' : 'Add to favorites'}</label>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favorite ? ' checked': ''}>
+          <label for="favorite" class="film-details__control-label film-details__control-label--favorite ${favoriteClassName}">${favorite ? 'Added to favorites' : 'Add to favorites'}</label>
         </section>
       </div>
 

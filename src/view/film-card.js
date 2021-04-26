@@ -25,14 +25,14 @@ const createFilmCardTemplate = (film) => {
     genres,
     description,
     comments,
-    isWatchListed,
-    isWatched,
-    isFavorite,
+    watchListed,
+    watched,
+    favorite,
   } = film;
 
-  const watchListClassName = isWatchListed ? 'film-card__controls-item--active' : '';
-  const watchedClassName = isWatched ? 'film-card__controls-item--active' : '';
-  const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
+  const watchListClassName = watchListed ? 'film-card__controls-item--active' : '';
+  const watchedClassName = watched ? 'film-card__controls-item--active' : '';
+  const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
   const commentCount = commentCountTemplate(comments);
 
   return `<article class="film-card">

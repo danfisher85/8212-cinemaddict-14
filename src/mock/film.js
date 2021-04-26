@@ -20,9 +20,9 @@ const generateFilmCard = () => {
     genres: getRandomArraySize(1, 5, GENRES, false),
     description: getRandomArraySize(1, 5, SENTENCES),
     comments: new Array(getRandomInteger(0, 5)).fill().map(() => generateComment(nanoid())),
-    isWatchListed: Boolean(getRandomInteger(0, 1)),
-    isWatched: Boolean(getRandomInteger(0, 1)),
-    isFavorite: Boolean(getRandomInteger(0, 1)),
+    watchListed: Boolean(getRandomInteger(0, 1)),
+    watched: Boolean(getRandomInteger(0, 1)),
+    favorite: Boolean(getRandomInteger(0, 1)),
   };
 };
 

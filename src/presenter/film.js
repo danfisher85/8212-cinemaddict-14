@@ -56,7 +56,7 @@ export default class Film {
         {},
         this._film,
         {
-          isFavorite: !this._film.isFavorite,
+          favorite: !this._film.favorite,
         },
       ),
     );
@@ -68,7 +68,7 @@ export default class Film {
         {},
         this._film,
         {
-          isWatchListed: !this._film.isWatchListed,
+          watchListed: !this._film.watchListed,
         },
       ),
     );
@@ -80,7 +80,7 @@ export default class Film {
         {},
         this._film,
         {
-          isWatched: !this._film.isWatched,
+          watched: !this._film.watched,
         },
       ),
     );
