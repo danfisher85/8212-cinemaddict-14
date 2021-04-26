@@ -119,3 +119,9 @@ export const ACTORS = [
   'Clark Gable',
   'Ingrid Bergman',
 ];
+
+export const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};
