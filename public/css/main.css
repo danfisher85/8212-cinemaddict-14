@@ -766,6 +766,30 @@ button {
 .film-details__control-input:checked + .film-details__control-label--favorite::before {
   background-image: url("../images/icons/icon-favorite-active.svg");
 }
+
+
+.film-details__control-input + .film-details__control-label--watchlist::after {
+  content: "Add to watchlist";
+}
+.film-details__control-input:checked + .film-details__control-label--watchlist::after {
+  content: "Added to watchlist";
+}
+
+.film-details__control-input + .film-details__control-label--watched::after {
+  content: "Mark as watched";
+}
+.film-details__control-input:checked + .film-details__control-label--watched::after {
+  content: "Already watched";
+}
+
+.film-details__control-input + .film-details__control-label--favorite::after {
+  content: "Add to favorites";
+}
+.film-details__control-input:checked + .film-details__control-label--favorite::after {
+  content: "Added to favorites";
+}
+
+
 .film-details__comment {
   display: flex;
   margin-bottom: 24px;
@@ -807,6 +831,9 @@ button {
   border-radius: 50%;
   opacity: 0.5;
   transition: all 0.4s;
+}
+.film-details__emoji-label img {
+  pointer-events: none;
 }
 .film-details__emoji-label:hover {
   opacity: 1;

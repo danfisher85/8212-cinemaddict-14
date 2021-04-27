@@ -24,6 +24,8 @@ export default class Film {
 
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._removePopup = this._removePopup.bind(this);
+
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(film) {
@@ -86,6 +88,10 @@ export default class Film {
     );
   }
 
+  _handleFormSubmit(film) {
+    this._changeData(film);
+  }
+
   resetView() {
     if (this._mode !== Mode.CLOSED) {
       this._removePopup();
@@ -109,6 +115,7 @@ export default class Film {
     this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._popupComponent.setFormSubmitHandler(this._handleWatchedClick);
 
     render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
   }
