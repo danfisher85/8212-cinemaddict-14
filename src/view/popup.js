@@ -2,8 +2,8 @@ import {EMOJIS} from '../const.js';
 import {formatFilmPopupDate} from '../utils/film.js';
 import AbstractView from './abstract.js';
 
-const createEmojiTemplate = () => {
-  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
+const createEmojiTemplate = (currentEmoji) => {
+  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? `checked` : ``}>
     <label class="film-details__emoji-label" for="emoji-${emoji}">
       <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
     </label>`).join('');
@@ -48,14 +48,10 @@ const createPopupTemplate = (state) => {
     isWatched,
     isFavorite,
     commentEmoji,
-    commentEmojiState,
+    emojiState,
   } = state;
 
-  const watchListClassName = isWatchListed ? 'film-card__controls-item--active' : '';
-  const watchedClassName = isWatched ? 'film-card__controls-item--active' : '';
-  const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
-
-  const emojiTemplate = createEmojiTemplate();
+  const emojiTemplate = createEmojiTemplate(emojiState);
   const commentsTemplate = createCommentTemplate(comments);
   const commentsElementCount = comments.length;
 
@@ -126,13 +122,13 @@ const createPopupTemplate = (state) => {
 
         <section class="film-details__controls">
           <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isWatchListed ? ' checked' : ''}>
-          <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ${watchListClassName}"></label>
+          <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist"></label>
 
           <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? ' checked' : ''}>
-          <label for="watched" class="film-details__control-label film-details__control-label--watched ${watchedClassName}"></label>
+          <label for="watched" class="film-details__control-label film-details__control-label--watched"></label>
 
           <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? ' checked': ''}>
-          <label for="favorite" class="film-details__control-label film-details__control-label--favorite ${favoriteClassName}"></label>
+          <label for="favorite" class="film-details__control-label film-details__control-label--favorite"></label>
         </section>
       </div>
 
@@ -146,7 +142,7 @@ const createPopupTemplate = (state) => {
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label">
-              ${commentEmojiState ? `<img src="images/emoji/${commentEmojiState}.png" width="55" height="55" alt="emoji-smile">`: ''}
+              ${emojiState ? `<img src="images/emoji/${emojiState}.png" width="55" height="55" alt="emoji-${emojiState}">`: ''}
             </div>
 
             <label class="film-details__comment-label">
@@ -218,11 +214,8 @@ export default class Popup extends AbstractView {
     }
 
     this.updateState({
-      commentEmojiState: evt.target.value,
+      emojiState: evt.target.value,
     });
-
-    // TODO add checked to state
-    evt.target.checked = true;
   }
 
   updateState(update, justStateUpdate) {
@@ -309,7 +302,7 @@ export default class Popup extends AbstractView {
         isWatchListed: film.watchListed,
         isWatched: film.watched,
         isFavorite: film.favorite,
-        commentEmojiState: film.commentEmoji,
+        emojiState: film.commentEmoji,
       },
     );
   }
@@ -324,7 +317,7 @@ export default class Popup extends AbstractView {
     delete state.isWatchListed;
     delete state.isWatched;
     delete state.isFavorite;
-    delete state.commentEmojiState;
+    delete state.emojiState;
 
     return state;
   }
