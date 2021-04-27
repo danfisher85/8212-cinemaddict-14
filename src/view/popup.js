@@ -1,6 +1,6 @@
 import {EMOJIS} from '../const.js';
 import {formatFilmPopupDate} from '../utils/film.js';
-import AbstractView from './abstract.js';
+import Smart from './smart.js';
 
 const createEmojiTemplate = (currentEmoji) => {
   return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? 'checked' : ''}>
@@ -156,7 +156,7 @@ const createPopupTemplate = (state) => {
   </section>`;
 };
 
-export default class Popup extends AbstractView {
+export default class Popup extends Smart {
   constructor(film) {
     super();
     this._film = film;
@@ -221,38 +221,6 @@ export default class Popup extends AbstractView {
     this.updateState({
       commentState: evt.target.value,
     }, true);
-  }
-
-  updateState(update, justStateUpdate) {
-    if (!update) {
-      return;
-    }
-
-    this._state = Object.assign(
-      {},
-      this._state,
-      update,
-    );
-
-    if (justStateUpdate) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    const prevScrollPosition = prevElement.scrollTop;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-    newElement.scrollTop = prevScrollPosition;
-
-    this.restoreHandlers();
   }
 
   restoreHandlers() {
