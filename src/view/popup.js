@@ -3,7 +3,7 @@ import {formatFilmPopupDate} from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const createEmojiTemplate = (currentEmoji) => {
-  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? `checked` : ``}>
+  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? 'checked' : ''}>
     <label class="film-details__emoji-label" for="emoji-${emoji}">
       <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
     </label>`).join('');
@@ -44,11 +44,8 @@ const createPopupTemplate = (state) => {
     watchListed,
     watched,
     favorite,
-    isWatchListed,
-    isWatched,
-    isFavorite,
-    commentEmoji,
     emojiState,
+    commentState,
   } = state;
 
   const emojiTemplate = createEmojiTemplate(emojiState);
@@ -121,13 +118,13 @@ const createPopupTemplate = (state) => {
         </div>
 
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isWatchListed ? ' checked' : ''}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchListed ? ' checked' : ''}>
           <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist"></label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? ' checked' : ''}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watched ? ' checked' : ''}>
           <label for="watched" class="film-details__control-label film-details__control-label--watched"></label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? ' checked': ''}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favorite ? ' checked': ''}>
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite"></label>
         </section>
       </div>
@@ -146,7 +143,7 @@ const createPopupTemplate = (state) => {
             </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentState ? commentState : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -170,6 +167,7 @@ export default class Popup extends AbstractView {
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this._commentInputHandler = this._commentInputHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
     this._setInnerHandlers();
@@ -188,7 +186,7 @@ export default class Popup extends AbstractView {
     this._callback.favoriteClick();
 
     this.updateState({
-      isFavorite: !this._state.isFavorite,
+      favorite: !this._state.favorite,
     }, true);
   }
 
@@ -196,7 +194,7 @@ export default class Popup extends AbstractView {
     this._callback.watchlistClick();
 
     this.updateState({
-      isWatchListed: !this._state.isWatchListed,
+      watchListed: !this._state.watchListed,
     }, true);
   }
 
@@ -204,7 +202,7 @@ export default class Popup extends AbstractView {
     this._callback.watchedClick();
 
     this.updateState({
-      isWatched: !this._state.isWatched,
+      watched: !this._state.watched,
     }, true);
   }
 
@@ -216,6 +214,13 @@ export default class Popup extends AbstractView {
     this.updateState({
       emojiState: evt.target.value,
     });
+  }
+
+  _commentInputHandler(evt) {
+    evt.preventDefault();
+    this.updateState({
+      commentState: evt.target.value,
+    }, true);
   }
 
   updateState(update, justStateUpdate) {
@@ -261,6 +266,7 @@ export default class Popup extends AbstractView {
 
   _setInnerHandlers() {
     this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiClickHandler);
+    this.getElement().querySelector('.film-details__comment-input').addEventListener('input', this._commentInputHandler);
   }
 
   _formSubmitHandler(evt) {
@@ -295,28 +301,13 @@ export default class Popup extends AbstractView {
   }
 
   static parseFilmDataToFilmState(film) {
-    return Object.assign(
-      {},
-      film,
-      {
-        isWatchListed: film.watchListed,
-        isWatched: film.watched,
-        isFavorite: film.favorite,
-        emojiState: film.commentEmoji,
-      },
-    );
+    return Object.assign({}, film);
   }
 
   static parseFilmStateToFilmData(state) {
     state = Object.assign({}, state);
 
-    state.watchListed = state.isWatchListed;
-    state.watched = state.isWatched;
-    state.favorite = state.isFavorite;
-
-    delete state.isWatchListed;
-    delete state.isWatched;
-    delete state.isFavorite;
+    delete state.commentState;
     delete state.emojiState;
 
     return state;
