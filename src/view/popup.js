@@ -1,5 +1,5 @@
 import {EMOJIS} from '../const.js';
-import {formatFilmPopupDate} from '../utils/film.js';
+import {getFilmPopupDate, getCommentHumaziedDate} from '../utils/film.js';
 import Smart from './smart.js';
 
 const createEmojiTemplate = (currentEmoji) => {
@@ -18,7 +18,7 @@ const createCommentTemplate = (comments) => {
       <p class="film-details__comment-text">${comment}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${date}</span>
+        <span class="film-details__comment-day">${getCommentHumaziedDate(date)}</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>
@@ -93,7 +93,7 @@ const createPopupTemplate = (state) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${formatFilmPopupDate(releaseDate)}</td>
+                <td class="film-details__cell">${getFilmPopupDate(releaseDate)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
