@@ -1,9 +1,9 @@
 import {EMOJIS} from '../const.js';
 import {formatFilmPopupDate} from '../utils/film.js';
-import AbstractView from './abstract.js';
+import Smart from './smart.js';
 
-const createEmojiTemplate = () => {
-  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
+const createEmojiTemplate = (currentEmoji) => {
+  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? 'checked' : ''}>
     <label class="film-details__emoji-label" for="emoji-${emoji}">
       <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
     </label>`).join('');
@@ -25,44 +25,30 @@ const createCommentTemplate = (comments) => {
   </li>`).join('');
 };
 
-const createPopupTemplate = (film = {}) => {
+const createPopupTemplate = (state) => {
   const {
-    title = 'Made For Each Other',
-    originalTitle = 'Made For Each Other',
-    director = 'Alfred Hitchcock',
-    writers = [
-      'Anne Wigton',
-      'Heinz Herald',
-      'Richard Weil',
-    ],
-    actors = [
-      'Robert De Niro',
-      'Jack Nicholson',
-      'Marlon Brando',
-    ],
-    audienceRating = '18+',
-    poster = 'made-for-each-other.png',
-    rating = 8.3,
-    releaseDate = '01 April 1995',
-    duration = '1h 36m',
-    genres = [
-      'Drama',
-      'Film-Noir',
-      'Mystery',
-    ],
-    comments = [],
-    country = 'USA',
-    description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.',
-    isWatchListed = false,
-    isWatched = false,
-    isFavorite = false,
-  } = film;
+    title,
+    originalTitle,
+    director,
+    writers,
+    actors,
+    audienceRating,
+    poster,
+    rating,
+    releaseDate,
+    duration,
+    genres,
+    comments,
+    country,
+    description,
+    watchListed,
+    watched,
+    favorite,
+    emojiState,
+    commentState,
+  } = state;
 
-  const watchListClassName = isWatchListed ? 'film-card__controls-item--active' : '';
-  const watchedClassName = isWatched ? 'film-card__controls-item--active' : '';
-  const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
-
-  const emojiTemplate = createEmojiTemplate();
+  const emojiTemplate = createEmojiTemplate(emojiState);
   const commentsTemplate = createCommentTemplate(comments);
   const commentsElementCount = comments.length;
 
@@ -132,14 +118,14 @@ const createPopupTemplate = (film = {}) => {
         </div>
 
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isWatchListed ? ' checked' : ''}>
-          <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ${watchListClassName}">${isWatchListed ? 'Added to watchlist' : 'Add to watchlist'}</label>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchListed ? ' checked' : ''}>
+          <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist"></label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? ' checked' : ''}>
-          <label for="watched" class="film-details__control-label film-details__control-label--watched ${watchedClassName}">${isWatched ? 'Already watched' : 'Mark as watched'}</label>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watched ? ' checked' : ''}>
+          <label for="watched" class="film-details__control-label film-details__control-label--watched"></label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? ' checked': ''}>
-          <label for="favorite" class="film-details__control-label film-details__control-label--favorite ${favoriteClassName}">${isFavorite ? 'Added to favorites' : 'Add to favorites'}</label>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favorite ? ' checked': ''}>
+          <label for="favorite" class="film-details__control-label film-details__control-label--favorite"></label>
         </section>
       </div>
 
@@ -152,10 +138,12 @@ const createPopupTemplate = (film = {}) => {
           </ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">
+              ${emojiState ? `<img src="images/emoji/${emojiState}.png" width="55" height="55" alt="emoji-${emojiState}">`: ''}
+            </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentState ? commentState : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -168,19 +156,25 @@ const createPopupTemplate = (film = {}) => {
   </section>`;
 };
 
-export default class Popup extends AbstractView {
+export default class Popup extends Smart {
   constructor(film) {
     super();
     this._film = film;
+    this._state = Popup.parseFilmDataToFilmState(film);
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film);
+    return createPopupTemplate(this._state);
   }
 
   _closeClickHandler(evt) {
@@ -190,14 +184,62 @@ export default class Popup extends AbstractView {
 
   _favoriteClickHandler() {
     this._callback.favoriteClick();
+
+    this.updateState({
+      favorite: !this._state.favorite,
+    }, true);
   }
 
   _watchlistClickHandler() {
     this._callback.watchlistClick();
+
+    this.updateState({
+      watchListed: !this._state.watchListed,
+    }, true);
   }
 
   _watchedClickHandler() {
     this._callback.watchedClick();
+
+    this.updateState({
+      watched: !this._state.watched,
+    }, true);
+  }
+
+  _emojiClickHandler(evt) {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+
+    this.updateState({
+      emojiState: evt.target.value,
+    });
+  }
+
+  _commentInputHandler(evt) {
+    evt.preventDefault();
+    this.updateState({
+      commentState: evt.target.value,
+    }, true);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setCloseClickHandler(this._callback.closeClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiClickHandler);
+    this.getElement().querySelector('.film-details__comment-input').addEventListener('input', this._commentInputHandler);
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit(Popup.parseFilmStateToFilmData(this._state));
   }
 
   setCloseClickHandler(callback) {
@@ -219,5 +261,23 @@ export default class Popup extends AbstractView {
   setWatchedClickHandler(callback) {
     this._callback.watchedClick = callback;
     this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._watchedClickHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  static parseFilmDataToFilmState(film) {
+    return Object.assign({}, film);
+  }
+
+  static parseFilmStateToFilmData(state) {
+    state = Object.assign({}, state);
+
+    delete state.commentState;
+    delete state.emojiState;
+
+    return state;
   }
 }
