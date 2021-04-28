@@ -120,6 +120,16 @@ export const ACTORS = [
   'Ingrid Bergman',
 ];
 
+export const COUNTRIES = [
+  'USA',
+  'Great Britain',
+  'France',
+  'Germany',
+  'Japan',
+  'Spain',
+  'Italy',
+];
+
 export const SortType = {
   DEFAULT: 'default',
   DATE: 'date',
