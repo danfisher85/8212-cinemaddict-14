@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import {getTruncatedText, formatFilmCardDate} from '../utils/film.js';
+import {getTruncatedText, getFilmCardDate} from '../utils/film.js';
 
 const commentCountTemplate = (comments) => {
   let commentResult = '';
@@ -39,7 +39,7 @@ const createFilmCardTemplate = (film) => {
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
-      <span class="film-card__year">${formatFilmCardDate(releaseDate)}</span>
+      <span class="film-card__year">${getFilmCardDate(releaseDate)}</span>
       <span class="film-card__duration">${duration}</span>
       <span class="film-card__genre">${genres[0]}</span>
     </p>

@@ -1,4 +1,7 @@
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 export const getHumanizedDuration = (minsTotal) => {
   const hours = Math.floor(minsTotal / 60);
@@ -16,17 +19,21 @@ export const getTruncatedText = (text) => {
   return text;
 };
 
-export const getRandomDate = (start, end, format = 'YYYY/MM/DD HH:mm') => {
+export const getRandomDate = (start, end) => {
   const newDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  return dayjs(newDate).format(format);
+  return dayjs(newDate).format();
 };
 
-export const formatFilmCardDate = (date) => {
+export const getFilmCardDate = (date) => {
   return dayjs(date).format('YYYY');
 };
 
-export const formatFilmPopupDate = (date) => {
+export const getFilmPopupDate = (date) => {
   return dayjs(date).format('DD MMMM YYYY');
+};
+
+export const getCommentHumaziedDate = (date) => {
+  return dayjs(date).fromNow();
 };
 
 export const sortFilmDate = (filmA, filmB) => {
