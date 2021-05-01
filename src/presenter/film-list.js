@@ -14,7 +14,8 @@ import {render, RenderPosition, remove} from '../utils/render.js';
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmList {
-  constructor(filmListContainer) {
+  constructor(filmListContainer, filmsModel) {
+    this._filmsModel = filmsModel;
     this._filmListContainer = filmListContainer;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
 
@@ -45,6 +46,10 @@ export default class FilmList {
     render(this._filmListComponent, this._filmListInnerComponent, RenderPosition.BEFOREEND); // .films-list__container
 
     this._renderFilmList();
+  }
+
+  _getFilms() {
+    return this._filmsModel.getFilms();
   }
 
   _sortFilms(sortType) {

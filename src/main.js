@@ -6,6 +6,7 @@ import FooterStatsView from './view/footer-stats.js';
 import {render, RenderPosition} from './utils/render.js';
 
 import FilmListPresenter from './presenter/film-list.js';
+import FilmsModel from './model/films.js';
 
 // Mocks
 import {generateUserRating} from './mock/user-rating.js';
@@ -20,6 +21,9 @@ const films = generateFilms(FILM_COUNT);
 const filters = generateFilter(films);
 const footerStats = generateFooterStats(films);
 
+const filmsModel = new FilmsModel();
+filmsModel.setFilms(films);
+
 const siteHeaderElement = document.querySelector('.header');
 render(siteHeaderElement, new HeaderProfileView(generateUserRating()), RenderPosition.BEFOREEND);
 
@@ -30,7 +34,7 @@ const siteMainNavElement = document.querySelector('.main-navigation');
 render(siteMainNavElement, new FilterView(filters), RenderPosition.BEFOREEND);
 render(siteMainNavElement, new NavStatsView(), RenderPosition.BEFOREEND);
 
-const filmListPresenter = new FilmListPresenter(siteMainElement);
+const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel);
 filmListPresenter.init(films);
 
 // Footer Stats
