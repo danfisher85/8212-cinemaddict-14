@@ -62,7 +62,7 @@ export default class FilmList {
     }
 
     this._currentSortType = sortType;
-    this._clearList({resetRenderedFilmCount: true});
+    this._clearFilmList({resetRenderedFilmCount: true});
     this._renderFilmList();
   }
 
@@ -97,11 +97,11 @@ export default class FilmList {
         this._filmPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        this._clearList();
+        this._clearFilmList();
         this._renderFilmList();
         break;
       case UpdateType.MAJOR:
-        this._clearList({resetRenderedFilmCount: true, resetSortType: true});
+        this._clearFilmList({resetRenderedFilmCount: true, resetSortType: true});
         this._renderFilmList();
         break;
     }
@@ -151,27 +151,7 @@ export default class FilmList {
     render(this._filmListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
   }
 
-  _clearFilmList() {
-    Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.destroy());
-
-    this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    remove(this._showMoreButtonComponent);
-  }
-
-  _renderFilmItems() {
-    const filmCount = this._getFilms().length;
-    const films = this._getFilms().slice(0, Math.min(filmCount, FILM_COUNT_PER_STEP));
-
-    this._renderFilms(films);
-
-    if (filmCount > FILM_COUNT_PER_STEP) {
-      this._renderShowMoreButton();
-    }
-  }
-
-  _clearList({resetRenderedFilmCount = false, resetSortType = false} = {}) {
+  _clearFilmList({resetRenderedFilmCount = false, resetSortType = false} = {}) {
     const filmCount = this._getFilms().length;
 
     Object
