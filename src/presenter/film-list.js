@@ -26,10 +26,13 @@ export default class FilmList {
     this._noFilmComponent = new NoFilmView();
     this._showMoreButtonComponent = new ShowMoreView();
 
-    this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handlePopupMode = this._handlePopupMode.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._filmsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -65,9 +68,20 @@ export default class FilmList {
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
-  _handleFilmChange(updatedFilm) {
-    // Здесь будем вызывать обновление модели
-    this._filmPresenter[updatedFilm.id].init(updatedFilm);
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   }
 
   _handlePopupMode() {
@@ -77,7 +91,7 @@ export default class FilmList {
   }
 
   _renderFilm(film, filmContainer) {
-    const filmPresenter = new FilmPresenter(filmContainer, this._handleFilmChange, this._handlePopupMode);
+    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewAction, this._handlePopupMode);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
