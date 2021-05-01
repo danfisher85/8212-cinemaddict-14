@@ -6,7 +6,7 @@ import FilmsListInnerView from '../view/films-list-inner.js';
 import ShowMoreView from '../view/show-more.js';
 import {sortFilmDate, sortFilmRating} from '../utils/film.js';
 import FilmPresenter from './film.js';
-import {SortType} from '../const.js';
+import {SortType, UpdateType, UserAction} from '../const.js';
 
 import {render, RenderPosition, remove} from '../utils/render.js';
 
@@ -69,19 +69,29 @@ export default class FilmList {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_FILM:
+        this._filmsModel.updateFilm(updateType, update);
+        break;
+      case UserAction.ADD_FILM:
+        this._filmsModel.addFilm(updateType, update);
+        break;
+      case UserAction.DELETE_FILM:
+        this._filmsModel.deleteFilm(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._filmPresenter[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+        break;
+      case UpdateType.MAJOR:
+        break;
+    }
   }
 
   _handlePopupMode() {
