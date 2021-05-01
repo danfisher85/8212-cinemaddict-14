@@ -35,7 +35,7 @@ render(siteMainNavElement, new FilterView(filters), RenderPosition.BEFOREEND);
 render(siteMainNavElement, new NavStatsView(), RenderPosition.BEFOREEND);
 
 const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel);
-filmListPresenter.init(films);
+filmListPresenter.init();
 
 // Footer Stats
 const siteFooterElement = document.querySelector('.footer');

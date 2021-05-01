@@ -6,7 +6,6 @@ import FilmsListInnerView from '../view/films-list-inner.js';
 import ShowMoreView from '../view/show-more.js';
 import {sortFilmDate, sortFilmRating} from '../utils/film.js';
 import FilmPresenter from './film.js';
-import {updateItem} from '../utils/common.js';
 import {SortType} from '../const.js';
 
 import {render, RenderPosition, remove} from '../utils/render.js';
@@ -33,14 +32,7 @@ export default class FilmList {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(films) {
-    this._films = films.slice();
-    this._sourcedFilms = films.slice();
-
-    this._filmPresenter = {};
-    this._currentSortType = SortType.DEFAULT;
-
-    // Regular
+  init() {
     render(this._filmListContainer, this._filmHolder, RenderPosition.BEFOREEND); // .films
     render(this._filmHolder, this._filmListComponent, RenderPosition.BEFOREEND); // .films-list
     render(this._filmListComponent, this._filmListInnerComponent, RenderPosition.BEFOREEND); // .films-list__container
@@ -49,22 +41,13 @@ export default class FilmList {
   }
 
   _getFilms() {
-    return this._filmsModel.getFilms();
-  }
-
-  _sortFilms(sortType) {
-    switch (sortType) {
+    switch (this._currentSortType) {
       case SortType.DATE:
-        this._films.sort(sortFilmDate);
-        break;
+        return this._filmsModel.getFilms().slice().sort(sortFilmDate);
       case SortType.RATING:
-        this._films.sort(sortFilmRating);
-        break;
-      default:
-        this._films = this._sourcedFilms.slice();
+        return this._filmsModel.getFilms().slice().sort(sortFilmRating);
     }
-
-    this._currentSortType = sortType;
+    return this._filmsModel.getFilms();
   }
 
   _handleSortTypeChange(sortType) {
@@ -72,7 +55,7 @@ export default class FilmList {
       return;
     }
 
-    this._sortFilms(sortType);
+    this._currentSortType = sortType;
     this._clearFilmList();
     this._renderFilmItems();
   }
@@ -83,8 +66,7 @@ export default class FilmList {
   }
 
   _handleFilmChange(updatedFilm) {
-    this._films = updateItem(this._films, updatedFilm);
-    this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
+    // Здесь будем вызывать обновление модели
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
   }
 
@@ -100,10 +82,8 @@ export default class FilmList {
     this._filmPresenter[film.id] = filmPresenter;
   }
 
-  _renderFilms(from, to) {
-    this._films
-      .slice(from, to)
-      .forEach((film) => this._renderFilm(film, this._filmListInnerComponent));
+  _renderFilms(films) {
+    films.forEach((film) => this._renderFilm(film, this._filmListInnerComponent));
   }
 
   _renderNoFilms() {
@@ -111,10 +91,14 @@ export default class FilmList {
   }
 
   _handleShowMoreButtonClick() {
-    this._renderFilms(this._renderedFilmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP);
-    this._renderedFilmCount += FILM_COUNT_PER_STEP;
+    const filmCount = this._getFilms().length;
+    const newRenderedFilmCount = Math.min(filmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP);
+    const films = this._getFilms().slice(this._renderedFilmCount, newRenderedFilmCount);
 
-    if (this._renderedFilmCount >= this._films.length) {
+    this._renderFilms(films);
+    this._renderedFilmCount = newRenderedFilmCount;
+
+    if (this._renderedFilmCount >= filmCount) {
       remove(this._showMoreButtonComponent);
     }
   }
@@ -136,15 +120,18 @@ export default class FilmList {
   }
 
   _renderFilmItems() {
-    this._renderFilms(0, Math.min(this._films.length, FILM_COUNT_PER_STEP));
+    const filmCount = this._getFilms().length;
+    const films = this._getFilms().slice(0, Math.min(filmCount, FILM_COUNT_PER_STEP));
 
-    if (this._films.length > FILM_COUNT_PER_STEP) {
+    this._renderFilms(films);
+
+    if (filmCount > FILM_COUNT_PER_STEP) {
       this._renderShowMoreButton();
     }
   }
 
   _renderFilmList() {
-    if (this._films.length === 0) {
+    if (this._getFilms().length === 0) {
       this._renderNoFilms();
       return;
     }
