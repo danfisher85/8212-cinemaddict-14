@@ -7,7 +7,7 @@ import ShowMoreView from '../view/show-more.js';
 import {sortFilmDate, sortFilmRating} from '../utils/film.js';
 import {filter} from '../utils/filter.js';
 import FilmPresenter from './film.js';
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {SortType, UpdateType} from '../const.js';
 
 import {render, RenderPosition, remove} from '../utils/render.js';
 
