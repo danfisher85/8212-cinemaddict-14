@@ -6,7 +6,10 @@ import FooterStatsView from './view/footer-stats.js';
 import {render, RenderPosition} from './utils/render.js';
 
 import FilmListPresenter from './presenter/film-list.js';
+
+// Models
 import FilmsModel from './model/films.js';
+import FilterModel from './model/filter.js';
 
 // Mocks
 import {generateUserRating} from './mock/user-rating.js';
@@ -23,6 +26,8 @@ const footerStats = generateFooterStats(films);
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
+
+const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.header');
 render(siteHeaderElement, new HeaderProfileView(generateUserRating()), RenderPosition.BEFOREEND);
