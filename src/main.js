@@ -1,11 +1,11 @@
 import HeaderProfileView from './view/profile.js';
 import MainNavView from './view/main-nav.js';
-import FilterView from './view/main-nav-filter.js';
 import NavStatsView from './view/main-nav-stats.js';
 import FooterStatsView from './view/footer-stats.js';
 import {render, RenderPosition} from './utils/render.js';
 
 import FilmListPresenter from './presenter/film-list.js';
+import FilterPresenter from './presenter/filter.js';
 
 // Models
 import FilmsModel from './model/films.js';
@@ -19,14 +19,6 @@ import {generateFooterStats} from './mock/footer-stats.js';
 const FILM_COUNT = 20;
 
 const films = generateFilms(FILM_COUNT);
-
-const filters = [
-  {
-    type: 'all',
-    name: 'ALL',
-    count: 0,
-  },
-];
 
 const footerStats = generateFooterStats(films);
 
@@ -42,11 +34,14 @@ const siteMainElement = document.querySelector('.main');
 render(siteMainElement, new MainNavView(), RenderPosition.AFTERBEGIN);
 
 const siteMainNavElement = document.querySelector('.main-navigation');
-render(siteMainNavElement, new FilterView(filters, 'all'), RenderPosition.BEFOREEND);
-render(siteMainNavElement, new NavStatsView(), RenderPosition.BEFOREEND);
 
 const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel);
+const filterPresenter = new FilterPresenter(siteMainNavElement, filterModel, filmsModel);
+
 filmListPresenter.init();
+filterPresenter.init();
+
+render(siteMainNavElement, new NavStatsView(), RenderPosition.BEFOREEND);
 
 // Footer Stats
 const siteFooterElement = document.querySelector('.footer');
