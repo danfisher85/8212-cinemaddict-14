@@ -86,18 +86,8 @@ export default class FilmList {
     render(this._filmHolder, this._sortComponent, RenderPosition.BEFOREBEGIN);
   }
 
-  _handleViewAction(actionType, updateType, update) {
-    switch (actionType) {
-      case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
-        break;
-      case UserAction.ADD_FILM:
-        this._filmsModel.addFilm(updateType, update);
-        break;
-      case UserAction.DELETE_FILM:
-        this._filmsModel.deleteFilm(updateType, update);
-        break;
-    }
+  _handleViewAction(updateType, update) {
+    this._filmsModel.updateFilm(updateType, update);
   }
 
   _handleModelEvent(updateType, data) {
