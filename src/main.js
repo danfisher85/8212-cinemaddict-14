@@ -35,7 +35,7 @@ render(siteMainElement, new MainNavView(), RenderPosition.AFTERBEGIN);
 
 const siteMainNavElement = document.querySelector('.main-navigation');
 
-const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel);
+const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMainNavElement, filterModel, filmsModel);
 
 filmListPresenter.init();
