@@ -53,7 +53,6 @@ export default class FilmList {
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
     const filteredFilms = filter[filterType](films);
-    console.log(filteredFilms);
 
     switch (this._currentSortType) {
       case SortType.DATE:
