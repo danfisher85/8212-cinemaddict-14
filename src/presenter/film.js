@@ -150,9 +150,9 @@ export default class Film {
         this._film,
         {
           comments: this._film.comments.filter((item) => item.id !== id),
-        }
+        },
       ),
-      id
+      id,
     );
   }
 

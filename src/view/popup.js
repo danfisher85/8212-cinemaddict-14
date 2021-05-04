@@ -129,7 +129,7 @@ const createPopupTemplate = (state, comments) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">${getPluralized(commentCount, `Comment`)} <span class="film-details__comments-count">${commentCount}</span></h3>
+          <h3 class="film-details__comments-title">${getPluralized(commentCount, 'Comment')} <span class="film-details__comments-count">${commentCount}</span></h3>
 
           <ul class="film-details__comments-list">
             ${commentsTemplate}

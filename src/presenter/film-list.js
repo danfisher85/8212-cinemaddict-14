@@ -52,7 +52,7 @@ export default class FilmList {
     render(this._filmHolder, this._filmListComponent, RenderPosition.BEFOREEND); // .films-list
     render(this._filmListComponent, this._filmListInnerComponent, RenderPosition.BEFOREEND); // .films-list__container
 
-    for (let film of this._getFilms()) {
+    for (const film of this._getFilms()) {
       const commentsModel = new CommentsModel();
       commentsModel.setComments(new Array(getRandomInteger(0, 5)).fill('').map(generateComment));
       this._comments[film.id] = commentsModel;
