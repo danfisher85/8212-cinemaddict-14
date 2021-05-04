@@ -1,19 +1,5 @@
 import AbstractView from './abstract.js';
-import {getTruncatedText, getFilmCardDate} from '../utils/film.js';
-
-const commentCountTemplate = (comments) => {
-  let commentResult = '';
-  const commentLength = comments.length;
-  if (commentLength === 1) {
-    commentResult = commentLength + ' comment';
-  } else if (commentLength > 1) {
-    commentResult = commentLength + ' comments';
-  } else {
-    commentResult = 'No comments';
-  }
-
-  return commentResult;
-};
+import {getTruncatedText, getFilmCardDate, getPluralized} from '../utils/film.js';
 
 const createFilmCardTemplate = (film) => {
   const {
@@ -33,7 +19,7 @@ const createFilmCardTemplate = (film) => {
   const watchListClassName = watchListed ? 'film-card__controls-item--active' : '';
   const watchedClassName = watched ? 'film-card__controls-item--active' : '';
   const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
-  const commentCount = commentCountTemplate(comments);
+  const commentCount = comments.length;
 
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
@@ -45,7 +31,7 @@ const createFilmCardTemplate = (film) => {
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${getTruncatedText(description)}</p>
-    <a class="film-card__comments">${commentCount}</a>
+    <a class="film-card__comments">${commentCount} ${getPluralized(commentCount, `comment`)}</a>
     <div class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchListClassName}" type="button">Add to watchlist</button>
       <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${watchedClassName}" type="button">Mark as watched</button>
