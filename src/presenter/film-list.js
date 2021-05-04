@@ -7,7 +7,11 @@ import ShowMoreView from '../view/show-more.js';
 import {sortFilmDate, sortFilmRating} from '../utils/film.js';
 import {filter} from '../utils/filter.js';
 import FilmPresenter from './film.js';
-import {SortType, UpdateType} from '../const.js';
+import {SortType, UpdateType, UserAction} from '../const.js';
+import {generateComment} from '../mock/comment.js';
+import {getRandomInteger} from '../utils/common.js';
+
+import CommentsModel from '../model/comments.js';
 
 import {render, RenderPosition, remove} from '../utils/render.js';
 
@@ -24,6 +28,8 @@ export default class FilmList {
 
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
+
+    this._comments = {};
 
     // List
     this._filmHolder = new FilmHolderView();
@@ -45,6 +51,13 @@ export default class FilmList {
     render(this._filmListContainer, this._filmHolder, RenderPosition.BEFOREEND); // .films
     render(this._filmHolder, this._filmListComponent, RenderPosition.BEFOREEND); // .films-list
     render(this._filmListComponent, this._filmListInnerComponent, RenderPosition.BEFOREEND); // .films-list__container
+
+    for (let film of this._getFilms()) {
+      const commentsModel = new CommentsModel();
+      commentsModel.setComments(new Array(getRandomInteger(0, 5)).fill('').map(generateComment));
+      this._comments[film.id] = commentsModel;
+      film.comments = this._comments[film.id].getComments();
+    }
 
     this._renderFilmList();
   }
@@ -85,8 +98,20 @@ export default class FilmList {
     render(this._filmHolder, this._sortComponent, RenderPosition.BEFOREBEGIN);
   }
 
-  _handleViewAction(updateType, update) {
-    this._filmsModel.updateFilm(updateType, update);
+  _handleViewAction(actionType, updateType, update, comment) {
+    switch (actionType) {
+      case UserAction.UPDATE_FILM:
+        this._filmsModel.updateFilm(updateType, update);
+        break;
+      case UserAction.ADD_COMMENT:
+        this._comments[update.id].addComment(updateType, comment);
+        this._filmsModel.updateFilm(updateType, update);
+        break;
+      case UserAction.DELETE_COMMENT:
+        this._comments[update.id].deleteComment(updateType, comment);
+        this._filmsModel.updateFilm(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
@@ -112,7 +137,7 @@ export default class FilmList {
   }
 
   _renderFilm(film, filmContainer) {
-    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewAction, this._handlePopupMode);
+    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewAction, this._handlePopupMode, this._comments[film.id]);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
