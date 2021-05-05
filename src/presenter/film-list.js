@@ -64,7 +64,7 @@ export default class FilmList {
 
   _getFilms() {
     const filterType = this._filterModel.getFilter();
-    const films = this._filmsModel.getFilms();
+    const films = this._filmsModel.getFilms().slice(); // quest: без slice() не работает default сортировка
     const filteredFilms = filter[filterType](films);
 
     switch (this._currentSortType) {
