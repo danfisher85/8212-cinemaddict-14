@@ -1,4 +1,5 @@
 import {nanoid} from 'nanoid';
+import he from 'he';
 import {EMOJIS, NAMES} from '../const.js';
 import { getRandomArrayElement } from '../utils/common.js';
 import {getFilmPopupDate, getCommentHumaziedDate, getPluralized} from '../utils/film.js';
@@ -17,7 +18,7 @@ const createCommentTemplate = (comments) => {
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
     </span>
     <div>
-      <p class="film-details__comment-text">${comment}</p>
+      <p class="film-details__comment-text">${he.encode(comment)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${getCommentHumaziedDate(date)}</span>
