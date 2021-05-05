@@ -104,7 +104,7 @@ export default class FilmList {
         this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this._comments[update.id].addComment(updateType, comment);
+        this._comments[update.id].addComment(updateType, update, comment);
         this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:

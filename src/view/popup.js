@@ -1,4 +1,6 @@
-import {EMOJIS} from '../const.js';
+import {nanoid} from 'nanoid';
+import {EMOJIS, NAMES} from '../const.js';
+import { getRandomArrayElement } from '../utils/common.js';
 import {getFilmPopupDate, getCommentHumaziedDate, getPluralized} from '../utils/film.js';
 import Smart from './smart.js';
 
@@ -249,8 +251,28 @@ export default class Popup extends Smart {
   }
 
   _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(Popup.parseFilmStateToFilmData(this._state));
+    if (evt.ctrlKey && evt.key === 'Enter' || evt.metaKey && evt.key === 'Enter') {
+
+      const newComment = {
+        emoji: this._state.emojiState,
+        comment: this._state.commentState,
+      };
+
+      if (newComment.emoji === '' || newComment.comment === '' || newComment.emoji === null || newComment.comment === null) {
+        return;
+      }
+
+      newComment.date = new Date();
+      newComment.author = getRandomArrayElement(NAMES);
+      newComment.id = nanoid();
+
+      this._callback.formSubmit(Popup.parseFilmStateToFilmData(newComment));
+
+      this.updateState({
+        emojiState: null,
+        commentState: null,
+      });
+    }
   }
 
   setCloseClickHandler(callback) {
@@ -285,7 +307,7 @@ export default class Popup extends Smart {
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+    document.addEventListener('keydown', this._formSubmitHandler);
   }
 
   static parseFilmDataToFilmState(film) {

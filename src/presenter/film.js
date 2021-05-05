@@ -122,7 +122,7 @@ export default class Film {
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._popupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
-    this._popupComponent.setFormSubmitHandler(this._handleWatchedClick);
+    this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
   }
@@ -160,7 +160,13 @@ export default class Film {
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.PATCH,
-      this._film,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: this._film.comments,
+        },
+      ),
       newComment,
     );
   }
