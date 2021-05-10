@@ -1,6 +1,7 @@
 import FilmView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   CLOSED: 'CLOSED',
@@ -8,7 +9,7 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(filmListContainer, changeData, changeMode) {
+  constructor(filmListContainer, changeData, changeMode, comments) {
     this._filmListContainer = filmListContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
@@ -16,6 +17,8 @@ export default class Film {
     this._filmComponent = null;
     this._popupComponent = null;
     this._mode = Mode.CLOSED;
+
+    this._comments = comments;
 
     this._handleFilmCardItemsClick = this._handleFilmCardItemsClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -25,6 +28,7 @@ export default class Film {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._removePopup = this._removePopup.bind(this);
 
+    this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
@@ -54,6 +58,8 @@ export default class Film {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -66,6 +72,8 @@ export default class Film {
 
   _handleWatchlistClick() {
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -78,6 +86,8 @@ export default class Film {
 
   _handleWatchedClick() {
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -86,10 +96,6 @@ export default class Film {
         },
       ),
     );
-  }
-
-  _handleFormSubmit(film) {
-    this._changeData(film);
   }
 
   resetView() {
@@ -102,10 +108,10 @@ export default class Film {
     remove(this._filmComponent);
   }
 
-  _handleFilmCardItemsClick() { // setItemsClickHandler
+  _handleFilmCardItemsClick() {
     document.body.classList.add('hide-overflow');
 
-    this._popupComponent = new PopupView(this._film);
+    this._popupComponent = new PopupView(this._film, this._comments);
     document.addEventListener('keydown', this._escKeyDownHandler);
 
     this._changeMode();
@@ -115,7 +121,8 @@ export default class Film {
     this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
-    this._popupComponent.setFormSubmitHandler(this._handleWatchedClick);
+    this._popupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
+    this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
   }
@@ -127,10 +134,40 @@ export default class Film {
     this._mode = Mode.CLOSED;
   }
 
-  _escKeyDownHandler(evt) { // onEscKeyDown
+  _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._removePopup();
     }
+  }
+
+  _handleDeleteCommentClick(id) {
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: this._film.comments.filter((item) => item.id !== id),
+        },
+      ),
+      id,
+    );
+  }
+
+  _handleFormSubmit(newComment) {
+    this._changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: this._film.comments,
+        },
+      ),
+      newComment,
+    );
   }
 }

@@ -1,5 +1,8 @@
-import {EMOJIS} from '../const.js';
-import {getFilmPopupDate, getCommentHumaziedDate} from '../utils/film.js';
+import {nanoid} from 'nanoid';
+import he from 'he';
+import {EMOJIS, NAMES} from '../const.js';
+import { getRandomArrayElement } from '../utils/common.js';
+import {getFilmPopupDate, getCommentHumaziedDate, getPluralized} from '../utils/film.js';
 import Smart from './smart.js';
 
 const createEmojiTemplate = (currentEmoji) => {
@@ -10,22 +13,22 @@ const createEmojiTemplate = (currentEmoji) => {
 };
 
 const createCommentTemplate = (comments) => {
-  return Object.values(comments).map(({id, author, comment, emoji, date}) => `<li class="film-details__comment" id="${id}">
+  return Object.values(comments).map(({id, author, comment, emoji, date}) => `<li class="film-details__comment" data-id="${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
     </span>
     <div>
-      <p class="film-details__comment-text">${comment}</p>
+      <p class="film-details__comment-text">${he.encode(comment)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${getCommentHumaziedDate(date)}</span>
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" data-id="${id}">Delete</button>
       </p>
     </div>
   </li>`).join('');
 };
 
-const createPopupTemplate = (state) => {
+const createPopupTemplate = (state, comments) => {
   const {
     title,
     originalTitle,
@@ -38,7 +41,6 @@ const createPopupTemplate = (state) => {
     releaseDate,
     duration,
     genres,
-    comments,
     country,
     description,
     watchListed,
@@ -50,8 +52,7 @@ const createPopupTemplate = (state) => {
 
   const emojiTemplate = createEmojiTemplate(emojiState);
   const commentsTemplate = createCommentTemplate(comments);
-  const commentsElementCount = comments.length;
-
+  const commentCount = comments.length;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -131,7 +132,7 @@ const createPopupTemplate = (state) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsElementCount}</span></h3>
+          <h3 class="film-details__comments-title">${getPluralized(commentCount, 'Comment')} <span class="film-details__comments-count">${commentCount}</span></h3>
 
           <ul class="film-details__comments-list">
             ${commentsTemplate}
@@ -157,16 +158,18 @@ const createPopupTemplate = (state) => {
 };
 
 export default class Popup extends Smart {
-  constructor(film) {
+  constructor(film, comments) {
     super();
-    this._film = film;
     this._state = Popup.parseFilmDataToFilmState(film);
+
+    this._comments = comments;
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
@@ -174,7 +177,7 @@ export default class Popup extends Smart {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._state);
+    return createPopupTemplate(this._state, this._comments.getComments());
   }
 
   _closeClickHandler(evt) {
@@ -224,12 +227,13 @@ export default class Popup extends Smart {
   }
 
   restoreHandlers() {
-    this._setInnerHandlers();
     this.setCloseClickHandler(this._callback.closeClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this._setInnerHandlers();
   }
 
   _setInnerHandlers() {
@@ -237,9 +241,38 @@ export default class Popup extends Smart {
     this.getElement().querySelector('.film-details__comment-input').addEventListener('input', this._commentInputHandler);
   }
 
-  _formSubmitHandler(evt) {
+  _deleteCommentClickHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(Popup.parseFilmStateToFilmData(this._state));
+
+    this._callback.deleteCommentClick(evt.target.dataset.id);
+    this.updateState({
+      comments: this._comments.getComments().filter((item) => item.id !== evt.target.dataset.id),
+    });
+  }
+
+  _formSubmitHandler(evt) {
+    if (evt.ctrlKey && evt.key === 'Enter' || evt.metaKey && evt.key === 'Enter') {
+
+      const newComment = {
+        emoji: this._state.emojiState,
+        comment: this._state.commentState,
+      };
+
+      if (newComment.emoji === '' || newComment.comment === '' || newComment.emoji === null || newComment.comment === null) {
+        return;
+      }
+
+      newComment.date = new Date();
+      newComment.author = getRandomArrayElement(NAMES);
+      newComment.id = nanoid();
+
+      this._callback.formSubmit(Popup.parseFilmStateToFilmData(newComment));
+
+      this.updateState({
+        emojiState: null,
+        commentState: null,
+      });
+    }
   }
 
   setCloseClickHandler(callback) {
@@ -263,9 +296,18 @@ export default class Popup extends Smart {
     this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._watchedClickHandler);
   }
 
+  setDeleteCommentClickHandler(callback) {
+    this._callback.deleteCommentClick = callback;
+
+    const commentsElement = this.getElement().querySelectorAll('.film-details__comment');
+    commentsElement.forEach((element) => {
+      element.querySelector('.film-details__comment-delete').addEventListener('click', this._deleteCommentClickHandler);
+    });
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+    document.addEventListener('keydown', this._formSubmitHandler);
   }
 
   static parseFilmDataToFilmState(film) {
