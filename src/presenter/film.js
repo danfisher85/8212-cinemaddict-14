@@ -149,7 +149,7 @@ export default class Film {
         {},
         this._film,
         {
-          comments: this._film.comments.filter((item) => item.id !== id),
+          comments: this._film.comments.filter((item) => item !== id),
         },
       ),
       id,
@@ -157,6 +157,10 @@ export default class Film {
   }
 
   _handleFormSubmit(newComment) {
+
+    const updatedComments = this._film.comments;
+    updatedComments.push(newComment.id);
+
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.PATCH,
@@ -164,7 +168,7 @@ export default class Film {
         {},
         this._film,
         {
-          comments: this._film.comments,
+          comments: updatedComments,
         },
       ),
       newComment,

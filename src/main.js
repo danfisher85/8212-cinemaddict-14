@@ -9,18 +9,24 @@ import FilterPresenter from './presenter/filter.js';
 
 // Models
 import FilmsModel from './model/films.js';
+import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 
 // Mocks
 import {generateUserRating} from './mock/user-rating.js';
+import {generateComments} from './mock/comment.js';
 import {generateFilms} from './mock/film.js';
 import {generateFooterStats} from './mock/footer-stats.js';
 
 const FILM_COUNT = 20;
 
-const films = generateFilms(FILM_COUNT);
+const comments = generateComments();
+const films = generateFilms(FILM_COUNT, comments);
 
 const footerStats = generateFooterStats(films);
+
+const commentsModel = new CommentsModel();
+commentsModel.setComments(comments);
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
@@ -35,7 +41,7 @@ render(siteMainElement, new MainNavView(), RenderPosition.AFTERBEGIN);
 
 const siteMainNavElement = document.querySelector('.main-navigation');
 
-const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel);
+const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
 const filterPresenter = new FilterPresenter(siteMainNavElement, filterModel, filmsModel);
 
 filmListPresenter.init();

@@ -28,7 +28,7 @@ const createCommentTemplate = (comments) => {
   </li>`).join('');
 };
 
-const createPopupTemplate = (state, comments) => {
+const createPopupTemplate = (state) => {
   const {
     title,
     originalTitle,
@@ -48,11 +48,12 @@ const createPopupTemplate = (state, comments) => {
     favorite,
     emojiState,
     commentState,
+    isComments,
   } = state;
 
   const emojiTemplate = createEmojiTemplate(emojiState);
-  const commentsTemplate = createCommentTemplate(comments);
-  const commentCount = comments.length;
+  const commentsTemplate = createCommentTemplate(isComments);
+  const commentCount = isComments.length;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -160,9 +161,7 @@ const createPopupTemplate = (state, comments) => {
 export default class Popup extends Smart {
   constructor(film, comments) {
     super();
-    this._state = Popup.parseFilmDataToFilmState(film);
-
-    this._comments = comments;
+    this._state = Popup.parseFilmDataToFilmState(film, comments);
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -177,7 +176,7 @@ export default class Popup extends Smart {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._state, this._comments.getComments());
+    return createPopupTemplate(this._state);
   }
 
   _closeClickHandler(evt) {
@@ -246,7 +245,7 @@ export default class Popup extends Smart {
 
     this._callback.deleteCommentClick(evt.target.dataset.id);
     this.updateState({
-      comments: this._comments.getComments().filter((item) => item.id !== evt.target.dataset.id),
+      isComments: this._state.isComments.filter((item) => item.id !== evt.target.dataset.id),
     });
   }
 
@@ -268,7 +267,11 @@ export default class Popup extends Smart {
 
       this._callback.formSubmit(Popup.parseFilmStateToFilmData(newComment));
 
+      const updatedComments = this._state.isComments;
+      updatedComments.push(newComment);
+
       this.updateState({
+        isComments: updatedComments,
         emojiState: null,
         commentState: null,
       });
@@ -310,8 +313,14 @@ export default class Popup extends Smart {
     document.addEventListener('keydown', this._formSubmitHandler);
   }
 
-  static parseFilmDataToFilmState(film) {
-    return Object.assign({}, film);
+  static parseFilmDataToFilmState(film, comments) {
+    return Object.assign(
+      {},
+      film,
+      {
+        isComments: comments.getComments().filter((comment) => film.comments.includes(comment.id)),
+      },
+    );
   }
 
   static parseFilmStateToFilmData(state) {
@@ -319,6 +328,7 @@ export default class Popup extends Smart {
 
     delete state.commentState;
     delete state.emojiState;
+    delete state.isComments;
 
     return state;
   }
