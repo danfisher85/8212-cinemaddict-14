@@ -267,7 +267,11 @@ export default class Popup extends Smart {
 
       this._callback.formSubmit(Popup.parseFilmStateToFilmData(newComment));
 
+      const updatedComments = this._state.isComments;
+      updatedComments.push(newComment);
+
       this.updateState({
+        isComments: updatedComments,
         emojiState: null,
         commentState: null,
       });
