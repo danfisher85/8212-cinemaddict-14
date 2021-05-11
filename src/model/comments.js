@@ -27,7 +27,7 @@ export default class Comments extends Observer {
     const count = this._comments.length;
     this._comments = this._comments.filter((comment) => comment.id !== commentId);
 
-   if (count === this._comments.length) {
+    if (count === this._comments.length) {
       throw new Error('Can\'t delete unexisting comment');
     }
 

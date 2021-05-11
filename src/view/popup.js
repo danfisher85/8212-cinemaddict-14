@@ -314,8 +314,8 @@ export default class Popup extends Smart {
       {},
       film,
       {
-        isComments: comments.getComments().filter((comment) => film.comments.includes(comment.id))
-      }
+        isComments: comments.getComments().filter((comment) => film.comments.includes(comment.id)),
+      },
     );
   }
 
