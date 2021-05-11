@@ -265,8 +265,6 @@ export default class Popup extends Smart {
       newComment.author = getRandomArrayElement(NAMES);
       newComment.id = nanoid();
 
-      this._callback.formSubmit(Popup.parseFilmStateToFilmData(newComment));
-
       const updatedComments = this._state.isComments;
       updatedComments.push(newComment);
 
@@ -275,6 +273,8 @@ export default class Popup extends Smart {
         emojiState: null,
         commentState: null,
       });
+
+      this._callback.formSubmit(Popup.parseFilmStateToFilmData(newComment));
     }
   }
 

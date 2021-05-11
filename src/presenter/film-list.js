@@ -125,7 +125,6 @@ export default class FilmList {
   }
 
   _renderFilm(film, filmContainer) {
-    // const filmComments = this._commentsModel.getComments().filter((comment) => film.comments.includes(comment.id));
     const filmPresenter = new FilmPresenter(filmContainer, this._handleViewAction, this._handlePopupMode, this._commentsModel);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
