@@ -1,8 +1,9 @@
 import HeaderProfileView from './view/profile.js';
 import MainNavView from './view/main-nav.js';
-import NavStatsView from './view/main-nav-stats.js';
+import StatsView from './view/statistics.js';
 import FooterStatsView from './view/footer-stats.js';
 import {render, RenderPosition} from './utils/render.js';
+import {NavItem} from './const.js';
 
 import FilmListPresenter from './presenter/film-list.js';
 import FilterPresenter from './presenter/filter.js';
@@ -37,17 +38,33 @@ const siteHeaderElement = document.querySelector('.header');
 render(siteHeaderElement, new HeaderProfileView(generateUserRating()), RenderPosition.BEFOREEND);
 
 const siteMainElement = document.querySelector('.main');
-render(siteMainElement, new MainNavView(), RenderPosition.AFTERBEGIN);
 
-const siteMainNavElement = document.querySelector('.main-navigation');
+const mainNavElement = new MainNavView();
+render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
 
 const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
-const filterPresenter = new FilterPresenter(siteMainNavElement, filterModel, filmsModel);
+const filterPresenter = new FilterPresenter(mainNavElement, filterModel, filmsModel);
 
 filmListPresenter.init();
 filterPresenter.init();
 
-render(siteMainNavElement, new NavStatsView(), RenderPosition.BEFOREEND);
+// Stats
+const statsElement = new StatsView();
+render(siteMainElement, statsElement, RenderPosition.BEFOREEND);
+
+const handleNavClick = (navItem) => {
+  switch (navItem) {
+    case NavItem.FILMS:
+      filmListPresenter.show();
+      statsElement.hide();
+      break;
+    case NavItem.STATS:
+      filmListPresenter.hide();
+      statsElement.show();
+      break;
+  }
+};
+mainNavElement.setNavClickHandler(handleNavClick);
 
 // Footer Stats
 const siteFooterElement = document.querySelector('.footer');

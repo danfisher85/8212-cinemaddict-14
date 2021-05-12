@@ -154,3 +154,8 @@ export const FilterType = {
   HISTORY: 'history',
   FAVORITES: 'favorites',
 };
+
+export const NavItem = {
+  FILMS: 'films',
+  STATS: 'stats',
+};

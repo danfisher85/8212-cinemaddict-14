@@ -50,6 +50,18 @@ export default class FilmList {
     this._renderFilmList();
   }
 
+  show() {
+    this._filmHolder.show();
+    this._sortComponent.show();
+    this._handleSortTypeChange(SortType.DEFAULT);
+  }
+
+  hide() {
+    this._filmHolder.hide();
+    this._sortComponent.hide();
+    this._handleSortTypeChange(SortType.DEFAULT);
+  }
+
   _getFilms() {
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms().slice(); // quest: без slice() не работает default сортировка
