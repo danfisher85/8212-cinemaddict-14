@@ -1,10 +1,12 @@
+import HeaderProfileView from '../view/profile.js';
+import FooterStatsView from '../view/footer-stats.js';
 import SortingView from '../view/sorting.js';
 import NoFilmView from '../view/no-film.js';
 import FilmHolderView from '../view/films.js';
 import FilmsListView from '../view/films-list.js';
 import FilmsListInnerView from '../view/films-list-inner.js';
 import ShowMoreView from '../view/show-more.js';
-import {sortFilmDate, sortFilmRating} from '../utils/film.js';
+import {sortFilmDate, sortFilmRating, getWatchedFilmsCount} from '../utils/film.js';
 import {filter} from '../utils/filter.js';
 import FilmPresenter from './film.js';
 import {SortType, UpdateType, UserAction} from '../const.js';
@@ -25,6 +27,11 @@ export default class FilmList {
 
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
+    this._headerProfileComponent = null;
+    this._footerStatsComponent = null;
+
+    this._siteHeaderElement = document.querySelector('.header');
+    this._siteFooterElement = document.querySelector('.footer');
 
     // List
     this._filmHolder = new FilmHolderView();
@@ -48,6 +55,27 @@ export default class FilmList {
     render(this._filmListComponent, this._filmListInnerComponent, RenderPosition.BEFOREEND); // .films-list__container
 
     this._renderFilmList();
+    this._renderFooterStats();
+  }
+
+  _renderHeaderProfile() {
+    if (this._headerProfileComponent !== null) {
+      this._headerProfileComponent = null;
+    }
+
+    const watchedFilmsCount = getWatchedFilmsCount(this._filmsModel.getFilms());
+    this._headerProfileComponent = new HeaderProfileView(watchedFilmsCount);
+
+    render(this._siteHeaderElement, this._headerProfileComponent, RenderPosition.BEFOREEND);
+  }
+
+  _renderFooterStats() {
+    if (this._footerStatsComponent !== null) {
+      this._footerStatsComponent = null;
+    }
+
+    this._footerStatsComponent = new FooterStatsView(this._filmsModel.getFilms().length);
+    render(this._siteFooterElement, this._footerStatsComponent, RenderPosition.BEFOREEND);
   }
 
   show() {
@@ -182,6 +210,7 @@ export default class FilmList {
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
 
+    remove(this._headerProfileComponent);
     remove(this._sortComponent);
     remove(this._noFilmComponent);
     remove(this._showMoreButtonComponent);
@@ -201,14 +230,13 @@ export default class FilmList {
     const films = this._getFilms();
     const filmCount = films.length;
 
-
     if (filmCount === 0) {
       this._renderNoFilms();
       return;
     }
 
+    this._renderHeaderProfile();
     this._renderSort();
-
     this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
 
     if (filmCount > this._renderedFilmCount) {

@@ -50,3 +50,15 @@ export const getPluralized = (val, word, plural = word + 's') => {
     [1, -1].includes(Number(num)) ? word : plural;
   return _pluralize(val, word, plural);
 };
+
+export const getWatchedFilmsCount = (films) => {
+  let filmCounter = 0;
+
+  films.forEach((film) => {
+    if (film.watched) {
+      filmCounter += 1;
+    }
+  });
+
+  return filmCounter;
+};
