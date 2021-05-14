@@ -1,11 +1,10 @@
 import MainNavView from './view/main-nav.js';
 import StatsView from './view/stats.js';
-import {render, RenderPosition} from './utils/render.js';
+import {render, remove, RenderPosition} from './utils/render.js';
 import {NavItem} from './const.js';
 
 import FilmListPresenter from './presenter/film-list.js';
 import FilterPresenter from './presenter/filter.js';
-import StatsPresenter from './presenter/stats.js';
 
 // Models
 import FilmsModel from './model/films.js';
@@ -36,25 +35,23 @@ render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
 
 const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
 const filterPresenter = new FilterPresenter(mainNavElement, filterModel, filmsModel);
-const statsPresenter = new StatsPresenter(siteMainElement, filmsModel);
 
-filmListPresenter.init();
-filterPresenter.init();
-statsPresenter.init();
-
-filmListPresenter.show();
-statsPresenter.hide();
+let statsComponent = null;
 
 const handleNavClick = (navItem) => {
   switch (navItem) {
     case NavItem.FILMS:
       filmListPresenter.show();
-      statsPresenter.hide();
+      remove(statsComponent);
       break;
     case NavItem.STATS:
       filmListPresenter.hide();
-      statsPresenter.show();
+      statsComponent = new StatsView(filmsModel.getFilms());
+      render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };
 mainNavElement.setNavClickHandler(handleNavClick);
+
+filmListPresenter.init();
+filterPresenter.init();

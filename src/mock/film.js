@@ -1,6 +1,6 @@
 import {nanoid} from 'nanoid';
 import {TITLES, POSTERS, DIRECTORS, COUNTRIES, AUDIENCERATINGS, SENTENCES, GENRES, WRITERS, ACTORS} from '../const.js';
-import {getHumanizedDuration, getRandomDate} from '../utils/film.js';
+import {getRandomDate} from '../utils/film.js';
 import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArraySize} from '../utils/common.js';
 
 const getRandomCommentsId = (comments) => {
@@ -18,6 +18,11 @@ const generateFilmCard = (comments) => {
     return commentsList.indexOf(item) === index;
   });
 
+  const genreList = getRandomArraySize(1, 5, GENRES, false);
+  const uniqueuniqueGenreList = genreList.filter((item, index) => {
+    return genreList.indexOf(item) === index;
+  });
+
   return {
     id: nanoid(),
     title: getRandomArrayElement(TITLES),
@@ -30,8 +35,8 @@ const generateFilmCard = (comments) => {
     rating: getRandomFloat(1, 10),
     country: getRandomArrayElement(COUNTRIES),
     releaseDate: getRandomDate(new Date(1910, 12, 31), new Date()),
-    duration: getHumanizedDuration(getRandomInteger(45, 180)),
-    genres: getRandomArraySize(1, 5, GENRES, false),
+    duration: getRandomInteger(45, 180),
+    genres: uniqueuniqueGenreList,
     description: getRandomArraySize(1, 5, SENTENCES),
     comments: uniqueComments,
     watchListed: Boolean(getRandomInteger(0, 1)),

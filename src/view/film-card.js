@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import {getTruncatedText, getFilmCardDate, getPluralized} from '../utils/film.js';
+import {getTruncatedText, getFilmCardDate, getPluralized, getHumanizedDuration} from '../utils/film.js';
 
 const createFilmCardTemplate = (film) => {
   const {
@@ -26,7 +26,7 @@ const createFilmCardTemplate = (film) => {
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
       <span class="film-card__year">${getFilmCardDate(releaseDate)}</span>
-      <span class="film-card__duration">${duration}</span>
+      <span class="film-card__duration">${getHumanizedDuration(duration)}</span>
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
