@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import Smart from './smart.js';
 import {getWatchedFilmsCount, getUserRankName, getPluralized} from '../utils/film.js';
+import {countWatchedFilmInDateRange} from '../utils/stats.js';
+import {StatsFilterType} from '../const.js';
 
 const createFilterItemTemplate = (filterItem, currentFilterType) => {
   const {type, name} = filterItem;
@@ -27,7 +29,32 @@ const createUserRankTemplate = (filmCount) => {
   </p>`;
 };
 
-const createStatsTemplate = (films, filteredFilms, filters, currentFilterType) => {
+const createStatsTemplate = (state, currentFilterType) => {
+  const {films, dateFrom} = state;
+  const filteredFilms = countWatchedFilmInDateRange(films, currentFilterType);
+
+  const filters = [
+    {
+      type: StatsFilterType.ALL,
+      name: 'All time',
+    },
+    {
+      type: StatsFilterType.TODAY,
+      name: 'Today',
+    },
+    {
+      type: StatsFilterType.WEEK,
+      name: 'Week',
+    },
+    {
+      type: StatsFilterType.MONTH,
+      name: 'Month',
+    },
+    {
+      type: StatsFilterType.YEAR,
+      name: 'Year',
+    },
+  ];
 
   return `<section class="statistic">
 
@@ -58,19 +85,36 @@ const createStatsTemplate = (films, filteredFilms, filters, currentFilterType) =
 };
 
 export default class Stats extends Smart {
-  constructor(films, filteredFilms, filterItems, currentFilterType) {
+  constructor(films) {
     super();
 
-    this._films = films;
-    this._filteredFilms = filteredFilms;
-    this._filterItems = filterItems;
-    this._currentFilterType = currentFilterType;
+    this._state = {
+      films,
+      dateFrom: (() => {
+        return dayjs(0).toDate();
+      })(),
+    };
 
+    this._currentFilterType = StatsFilterType.ALL;
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  removeElement() {
+    super.removeElement();
   }
 
   getTemplate() {
-    return createStatsTemplate(this._films, this._filteredFilms, this._filterItems, this._currentFilterType);
+    return createStatsTemplate(this._state, this._currentFilterType);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.statistic__filters').addEventListener('change', this._filterTypeChangeHandler);
   }
 
   _filterTypeChangeHandler(evt) {
@@ -78,11 +122,13 @@ export default class Stats extends Smart {
       return;
     }
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.value);
-  }
 
-  setFilterTypeChangeHandler(callback) {
-    this._callback.filterTypeChange = callback;
-    this.getElement().querySelector('.statistic__filters').addEventListener('change', this._filterTypeChangeHandler);
+    this._currentFilterType = evt.target.value;
+
+    this.updateState({
+      dateFrom: (() => {
+        return dayjs().subtract(1, 'year').toDate();
+      })(),
+    });
   }
 }

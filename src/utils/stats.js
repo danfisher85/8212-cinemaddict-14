@@ -18,3 +18,26 @@ export const statsFilter = {
   [StatsFilterType.MONTH]: (films) => films.filter((film) => film.watched && dayjs(film.watchedDate).isBetween(now, month)),
   [StatsFilterType.YEAR]: (films) => films.filter((film) => film.watched && dayjs(film.watchedDate).isBetween(now, year)),
 };
+
+export const countWatchedFilmInDateRange = (films, currentFilterType) => {
+  let filteredFilms = null;
+  switch (currentFilterType) {
+    case StatsFilterType.ALL:
+      filteredFilms = statsFilter[StatsFilterType.ALL](films);
+      break;
+    case StatsFilterType.TODAY:
+      filteredFilms = statsFilter[StatsFilterType.TODAY](films);
+      break;
+    case StatsFilterType.WEEK:
+      filteredFilms = statsFilter[StatsFilterType.WEEK](films);
+      break;
+    case StatsFilterType.MONTH:
+      filteredFilms = statsFilter[StatsFilterType.MONTH](films);
+      break;
+    case StatsFilterType.YEAR:
+      filteredFilms = statsFilter[StatsFilterType.YEAR](films);
+      break;
+  }
+
+  return filteredFilms;
+};
