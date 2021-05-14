@@ -1,26 +1,8 @@
 import AbstractView from './abstract.js';
-import {UserRating} from '../const.js';
+import {getUserRankName} from '../utils/film.js';
 
 const createProfileTemplate = (filmCount) => {
-
-  const getUserRatingName = () => {
-
-    if (filmCount === 0) {
-      return '';
-    }
-
-    if ((filmCount >= 1) && (filmCount) <= 10) {
-      return UserRating.NOVICE;
-    }
-
-    if ((filmCount >= 11) && (filmCount) <= 20) {
-      return UserRating.FAN;
-    }
-
-    return UserRating.MOVIE_BUFF;
-  };
-
-  const userRatingName = getUserRatingName();
+  const userRatingName = getUserRankName(filmCount);
 
   return `<section class="header__profile profile">
     ${userRatingName ? `<p class="profile__rating">${userRatingName}</p>` : ''}

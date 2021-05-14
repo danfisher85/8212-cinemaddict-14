@@ -36,6 +36,7 @@ const generateFilmCard = (comments) => {
     comments: uniqueComments,
     watchListed: Boolean(getRandomInteger(0, 1)),
     watched: Boolean(getRandomInteger(0, 1)),
+    watchedDate: getRandomDate(new Date(2021, 1, 1), new Date()),
     favorite: Boolean(getRandomInteger(0, 1)),
   };
 };

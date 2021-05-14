@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import {UserRating} from '../const.js';
 
 dayjs.extend(relativeTime);
 
@@ -61,4 +62,18 @@ export const getWatchedFilmsCount = (films) => {
   });
 
   return filmCounter;
+};
+
+export const getUserRankName = (filmCount) => {
+  if (filmCount === 0) {
+    return '';
+  }
+  if ((filmCount >= 1) && (filmCount) <= 10) {
+    return UserRating.NOVICE;
+  }
+  if ((filmCount >= 11) && (filmCount) <= 20) {
+    return UserRating.FAN;
+  }
+
+  return UserRating.MOVIE_BUFF;
 };

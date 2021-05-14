@@ -158,3 +158,11 @@ export const NavItem = {
   FILMS: 'films',
   STATS: 'stats',
 };
+
+export const StatsFilterType = {
+  ALL: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
