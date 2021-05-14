@@ -41,3 +41,29 @@ export const countWatchedFilmInDateRange = (films, currentFilterType) => {
 
   return filteredFilms;
 };
+
+export const countWatchedFilmDuration = (films) => {
+  return films.reduce((acc, film) => acc + film.duration, 0);
+};
+
+export const getHumanizedDurationStats = (minsTotal) => {
+  const hours = Math.floor(minsTotal / 60);
+  const mins = minsTotal % 60;
+  const hoursOutput = hours ? hours + '<span class="statistic__item-description">h</span> ' : '';
+
+  return hoursOutput + mins + '<span class="statistic__item-description">m</span>';
+};
+
+export const getFilmGenreStats = (films) => {
+  const results = {};
+
+  films.reduce((acc, film) => acc.concat(film.genres), [])
+    .forEach((genre) => {
+      if (results[genre]) {
+        results[genre]++;
+        return;
+      }
+      results[genre] = 1;
+    });
+  return results;
+};

@@ -2,7 +2,7 @@ import {nanoid} from 'nanoid';
 import he from 'he';
 import {EMOJIS, NAMES} from '../const.js';
 import { getRandomArrayElement } from '../utils/common.js';
-import {getFilmPopupDate, getCommentHumaziedDate, getPluralized} from '../utils/film.js';
+import {getFilmPopupDate, getCommentHumaziedDate, getPluralized, getHumanizedDuration} from '../utils/film.js';
 import Smart from './smart.js';
 
 const createEmojiTemplate = (currentEmoji) => {
@@ -99,7 +99,7 @@ const createPopupTemplate = (state) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${duration}</td>
+                <td class="film-details__cell">${getHumanizedDuration(duration)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

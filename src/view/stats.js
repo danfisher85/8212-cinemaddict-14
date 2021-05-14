@@ -1,12 +1,12 @@
-import dayjs from 'dayjs';
 import Smart from './smart.js';
+import {getMaxKey} from '../utils/common.js';
 import {getWatchedFilmsCount, getUserRankName, getPluralized} from '../utils/film.js';
-import {countWatchedFilmInDateRange} from '../utils/stats.js';
+import {countWatchedFilmInDateRange, countWatchedFilmDuration, getHumanizedDurationStats, getFilmGenreStats} from '../utils/stats.js';
 import {StatsFilterType} from '../const.js';
 
 const createFilterItemTemplate = (filterItem, currentFilterType) => {
   const {type, name} = filterItem;
-  return `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${type}" value="${type}" ${type === currentFilterType ? `checked` : ''}>
+  return `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${type}" value="${type}" ${type === currentFilterType ? 'checked' : ''}>
     <label for="statistic-${type}" class="statistic__filters-label">${name}</label>`;
 };
 
@@ -30,8 +30,9 @@ const createUserRankTemplate = (filmCount) => {
 };
 
 const createStatsTemplate = (state, currentFilterType) => {
-  const {films, dateFrom} = state;
+  const {films} = state;
   const filteredFilms = countWatchedFilmInDateRange(films, currentFilterType);
+  const watchedFilmDurationMin = countWatchedFilmDuration(filteredFilms);
 
   const filters = [
     {
@@ -69,11 +70,11 @@ const createStatsTemplate = (state, currentFilterType) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text">${getHumanizedDurationStats(watchedFilmDurationMin)}</p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Sci-Fi</p>
+        <p class="statistic__item-text">${getMaxKey(getFilmGenreStats(filteredFilms))}</p>
       </li>
     </ul>
 
@@ -90,9 +91,6 @@ export default class Stats extends Smart {
 
     this._state = {
       films,
-      dateFrom: (() => {
-        return dayjs(0).toDate();
-      })(),
     };
 
     this._currentFilterType = StatsFilterType.ALL;
@@ -125,10 +123,6 @@ export default class Stats extends Smart {
 
     this._currentFilterType = evt.target.value;
 
-    this.updateState({
-      dateFrom: (() => {
-        return dayjs().subtract(1, 'year').toDate();
-      })(),
-    });
+    this.updateState({});
   }
 }

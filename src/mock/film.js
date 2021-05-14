@@ -1,6 +1,6 @@
 import {nanoid} from 'nanoid';
 import {TITLES, POSTERS, DIRECTORS, COUNTRIES, AUDIENCERATINGS, SENTENCES, GENRES, WRITERS, ACTORS} from '../const.js';
-import {getHumanizedDuration, getRandomDate} from '../utils/film.js';
+import {getRandomDate} from '../utils/film.js';
 import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArraySize} from '../utils/common.js';
 
 const getRandomCommentsId = (comments) => {
@@ -30,7 +30,7 @@ const generateFilmCard = (comments) => {
     rating: getRandomFloat(1, 10),
     country: getRandomArrayElement(COUNTRIES),
     releaseDate: getRandomDate(new Date(1910, 12, 31), new Date()),
-    duration: getHumanizedDuration(getRandomInteger(45, 180)),
+    duration: getRandomInteger(45, 180),
     genres: getRandomArraySize(1, 5, GENRES, false),
     description: getRandomArraySize(1, 5, SENTENCES),
     comments: uniqueComments,
