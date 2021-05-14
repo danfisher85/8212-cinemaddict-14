@@ -18,6 +18,11 @@ const generateFilmCard = (comments) => {
     return commentsList.indexOf(item) === index;
   });
 
+  const genreList = getRandomArraySize(1, 5, GENRES, false);
+  const uniqueuniqueGenreList = genreList.filter((item, index) => {
+    return genreList.indexOf(item) === index;
+  });
+
   return {
     id: nanoid(),
     title: getRandomArrayElement(TITLES),
@@ -31,7 +36,7 @@ const generateFilmCard = (comments) => {
     country: getRandomArrayElement(COUNTRIES),
     releaseDate: getRandomDate(new Date(1910, 12, 31), new Date()),
     duration: getRandomInteger(45, 180),
-    genres: getRandomArraySize(1, 5, GENRES, false),
+    genres: uniqueuniqueGenreList,
     description: getRandomArraySize(1, 5, SENTENCES),
     comments: uniqueComments,
     watchListed: Boolean(getRandomInteger(0, 1)),

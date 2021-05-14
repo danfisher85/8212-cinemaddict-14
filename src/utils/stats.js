@@ -67,3 +67,12 @@ export const getFilmGenreStats = (films) => {
     });
   return results;
 };
+
+export const getGenresLabels = (labels, counts, films) => {
+  Object.entries(getFilmGenreStats(films))
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([label, count]) => {
+      labels.push(label);
+      counts.push(count);
+    });
+};
