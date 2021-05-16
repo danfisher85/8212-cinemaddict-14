@@ -5,6 +5,7 @@ import NoFilmView from '../view/no-film.js';
 import FilmHolderView from '../view/films.js';
 import FilmsListView from '../view/films-list.js';
 import FilmsListInnerView from '../view/films-list-inner.js';
+import LoadingView from '../view/loading.js';
 import ShowMoreView from '../view/show-more.js';
 import {sortFilmDate, sortFilmRating, getWatchedFilmsCount} from '../utils/film.js';
 import {filter} from '../utils/filter.js';
@@ -24,6 +25,7 @@ export default class FilmList {
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmPresenter = {};
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
 
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
@@ -38,6 +40,7 @@ export default class FilmList {
     this._filmListComponent = new FilmsListView();
     this._filmListInnerComponent = new FilmsListInnerView();
     this._noFilmComponent = new NoFilmView();
+    this._loadingCompoent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -155,6 +158,11 @@ export default class FilmList {
         this._clearFilmList({resetRenderedFilmCount: true, resetSortType: true});
         this._renderFilmList();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingCompoent);
+        this._renderFilmList();
+        break;
     }
   }
 
@@ -172,6 +180,10 @@ export default class FilmList {
 
   _renderFilms(films) {
     films.forEach((film) => this._renderFilm(film, this._filmListInnerComponent));
+  }
+
+  _renderLoading() {
+    render(this._filmListContainer, this._loadingCompoent, RenderPosition.BEFOREEND);
   }
 
   _renderNoFilms() {
@@ -213,6 +225,7 @@ export default class FilmList {
     remove(this._headerProfileComponent);
     remove(this._sortComponent);
     remove(this._noFilmComponent);
+    remove(this._loadingCompoent);
     remove(this._showMoreButtonComponent);
 
     if (resetRenderedFilmCount) {
@@ -227,6 +240,11 @@ export default class FilmList {
   }
 
   _renderFilmList() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const films = this._getFilms();
     const filmCount = films.length;
 
