@@ -1,9 +1,8 @@
-export const USER_RATINGS = [
-  '',
-  'Novice',
-  'Fan',
-  'Movie Buff',
-];
+export const UserRating = {
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie Buff',
+};
 
 export const NAMES = [
   'Tim Macoveev',
@@ -153,4 +152,17 @@ export const FilterType = {
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',
+};
+
+export const NavItem = {
+  FILMS: 'films',
+  STATS: 'stats',
+};
+
+export const StatsFilterType = {
+  ALL: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
