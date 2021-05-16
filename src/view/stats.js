@@ -1,9 +1,8 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import Smart from './smart.js';
-import {getMaxKey} from '../utils/common.js';
 import {getWatchedFilmsCount, getUserRankName, getPluralized} from '../utils/film.js';
-import {countWatchedFilmInDateRange, countWatchedFilmDuration, getHumanizedDurationStats, getFilmGenreStats, getGenresLabels} from '../utils/stats.js';
+import {countWatchedFilmInDateRange, countWatchedFilmDuration, getHumanizedDurationStats, getFilmGenreStats, getGenresLabels, getTopGenreLabels} from '../utils/stats.js';
 import {StatsFilterType} from '../const.js';
 
 const createFilterItemTemplate = (filterItem, currentFilterType) => {
@@ -102,6 +101,7 @@ const createStatsTemplate = (state, currentFilterType) => {
   const {films} = state;
   const filteredFilms = countWatchedFilmInDateRange(films, currentFilterType);
   const watchedFilmDurationMin = countWatchedFilmDuration(filteredFilms);
+  const topGenres = getFilmGenreStats(filteredFilms);
 
   const filters = [
     {
@@ -142,8 +142,8 @@ const createStatsTemplate = (state, currentFilterType) => {
         <p class="statistic__item-text">${getHumanizedDurationStats(watchedFilmDurationMin)}</p>
       </li>
       <li class="statistic__text-item">
-        <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">${getMaxKey(getFilmGenreStats(filteredFilms))}</p>
+        <h4 class="statistic__item-title">Top ${getPluralized(topGenres, 'genre')}</h4>
+        <p class="statistic__item-text">${getTopGenreLabels(topGenres)}</p>
       </li>
     </ul>
 

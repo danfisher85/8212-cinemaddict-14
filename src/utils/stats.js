@@ -76,3 +76,9 @@ export const getGenresLabels = (labels, counts, films) => {
       counts.push(count);
     });
 };
+
+export const getTopGenreLabels = (object) => {
+  return Object.keys(object).filter((element) => {
+    return object[element] === Math.max.apply(null, Object.values(object));
+  }).join(', ');
+};
