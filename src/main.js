@@ -13,34 +13,24 @@ import FilterModel from './model/filter.js';
 
 // Mocks
 import {generateComments} from './mock/comment.js';
-import {generateFilms} from './mock/film.js';
 
 import Api from './api.js';
 
-const FILM_COUNT = 20;
 const AUTHORIZATION = 'Basic fRxjCTzZVTjPgAAeA';
 const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
-const comments = generateComments();
-const films = generateFilms(FILM_COUNT, comments);
+const siteMainElement = document.querySelector('.main');
+
 const api = new Api(END_POINT, AUTHORIZATION);
 
-api.getFilms().then((films) => {
-  console.log(films);
-});
+const comments = generateComments();
 
 const commentsModel = new CommentsModel();
 commentsModel.setComments(comments);
-
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
-
 const filterModel = new FilterModel();
 
-const siteMainElement = document.querySelector('.main');
-
 const mainNavElement = new MainNavView();
-render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
 
 const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
 const filterPresenter = new FilterPresenter(mainNavElement, filterModel, filmsModel);
@@ -62,5 +52,10 @@ const handleNavClick = (navItem) => {
 };
 mainNavElement.setNavClickHandler(handleNavClick);
 
+render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
 filmListPresenter.init();
 filterPresenter.init();
+
+api.getFilms().then((films) => {
+  filmsModel.setFilms(films);
+});
