@@ -1,7 +1,7 @@
 import MainNavView from './view/main-nav.js';
 import StatsView from './view/stats.js';
 import {render, remove, RenderPosition} from './utils/render.js';
-import {NavItem} from './const.js';
+import {NavItem, UpdateType} from './const.js';
 
 import FilmListPresenter from './presenter/film-list.js';
 import FilterPresenter from './presenter/filter.js';
@@ -56,6 +56,10 @@ render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
 filmListPresenter.init();
 filterPresenter.init();
 
-api.getFilms().then((films) => {
-  filmsModel.setFilms(films);
-});
+api.getFilms()
+  .then((films) => {
+    filmsModel.setFilms(UpdateType.INIT, films);
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
+  });
