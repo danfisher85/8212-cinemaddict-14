@@ -15,10 +15,19 @@ import FilterModel from './model/filter.js';
 import {generateComments} from './mock/comment.js';
 import {generateFilms} from './mock/film.js';
 
+import Api from './api.js';
+
 const FILM_COUNT = 20;
+const AUTHORIZATION = 'Basic fRxjCTzZVTjPgAAeA';
+const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 const comments = generateComments();
 const films = generateFilms(FILM_COUNT, comments);
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getFilms().then((films) => {
+  console.log(films);
+});
 
 const commentsModel = new CommentsModel();
 commentsModel.setComments(comments);
