@@ -32,7 +32,7 @@ const filterModel = new FilterModel();
 
 const mainNavElement = new MainNavView();
 
-const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
+const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel, api);
 const filterPresenter = new FilterPresenter(mainNavElement, filterModel, filmsModel);
 
 let statsComponent = null;

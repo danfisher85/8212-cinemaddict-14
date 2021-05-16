@@ -17,7 +17,7 @@ import {render, RenderPosition, remove} from '../utils/render.js';
 const FILM_COUNT_PER_STEP = 5;
 
 export default class FilmList {
-  constructor(filmListContainer, filmsModel, filterModel, commentsModel) {
+  constructor(filmListContainer, filmsModel, filterModel, commentsModel, api) {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._commentsModel = commentsModel;
@@ -26,6 +26,7 @@ export default class FilmList {
     this._filmPresenter = {};
     this._currentSortType = SortType.DEFAULT;
     this._isLoading = true;
+    this._api = api;
 
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
@@ -132,7 +133,9 @@ export default class FilmList {
   _handleViewAction(actionType, updateType, update, comment) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
         break;
       case UserAction.ADD_COMMENT:
         this._commentsModel.addComment(updateType, update, comment);
