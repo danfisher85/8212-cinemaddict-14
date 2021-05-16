@@ -9,7 +9,7 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(filmListContainer, changeData, changeMode, comments) {
+  constructor(filmListContainer, changeData, changeMode, commentsModel, api) {
     this._filmListContainer = filmListContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
@@ -18,7 +18,8 @@ export default class Film {
     this._popupComponent = null;
     this._mode = Mode.CLOSED;
 
-    this._comments = comments;
+    this._commentsModel = commentsModel;
+    this._api = api;
 
     this._handleFilmCardItemsClick = this._handleFilmCardItemsClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -150,10 +151,10 @@ export default class Film {
     remove(this._filmComponent);
   }
 
-  _handleFilmCardItemsClick() {
+  _renderFilmPopup() {
     document.body.classList.add('hide-overflow');
 
-    this._popupComponent = new PopupView(this._film, this._comments);
+    this._popupComponent = new PopupView(this._film, this._commentsModel);
     document.addEventListener('keydown', this._escKeyDownHandler);
 
     this._changeMode();
@@ -171,6 +172,18 @@ export default class Film {
     this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
+  }
+
+  _handleFilmCardItemsClick() {
+    this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._commentsModel.setComments(UpdateType.INIT, comments);
+        this._renderFilmPopup();
+      })
+      .catch(() => {
+        this._commentsModel.setComments(UpdateType.INIT, []);
+        this._renderFilmPopup();
+      });
   }
 
   _removePopup() {

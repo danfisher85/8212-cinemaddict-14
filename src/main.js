@@ -11,9 +11,6 @@ import FilmsModel from './model/films.js';
 import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 
-// Mocks
-import {generateComments} from './mock/comment.js';
-
 import Api from './api.js';
 
 const AUTHORIZATION = 'Basic fRxjCTzZVTjPgAAeA';
@@ -23,10 +20,7 @@ const siteMainElement = document.querySelector('.main');
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
-const comments = generateComments();
 const commentsModel = new CommentsModel();
-commentsModel.setComments(comments);
-
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
 

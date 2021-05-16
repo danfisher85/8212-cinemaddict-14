@@ -41,7 +41,7 @@ export default class FilmList {
     this._filmListComponent = new FilmsListView();
     this._filmListInnerComponent = new FilmsListInnerView();
     this._noFilmComponent = new NoFilmView();
-    this._loadingCompoent = new LoadingView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -163,7 +163,7 @@ export default class FilmList {
         break;
       case UpdateType.INIT:
         this._isLoading = false;
-        remove(this._loadingCompoent);
+        remove(this._loadingComponent);
         this._renderFilmList();
         break;
     }
@@ -176,7 +176,7 @@ export default class FilmList {
   }
 
   _renderFilm(film, filmContainer) {
-    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewAction, this._handlePopupMode, this._commentsModel);
+    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewAction, this._handlePopupMode, this._commentsModel, this._api);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
@@ -186,7 +186,7 @@ export default class FilmList {
   }
 
   _renderLoading() {
-    render(this._filmListContainer, this._loadingCompoent, RenderPosition.BEFOREEND);
+    render(this._filmListContainer, this._loadingComponent, RenderPosition.BEFOREEND);
   }
 
   _renderNoFilms() {
@@ -228,7 +228,7 @@ export default class FilmList {
     remove(this._headerProfileComponent);
     remove(this._sortComponent);
     remove(this._noFilmComponent);
-    remove(this._loadingCompoent);
+    remove(this._loadingComponent);
     remove(this._showMoreButtonComponent);
 
     if (resetRenderedFilmCount) {
