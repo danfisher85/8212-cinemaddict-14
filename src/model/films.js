@@ -79,7 +79,7 @@ export default class Films extends Observer {
           'actors': film.actors,
           'release': {
             'date': film.releaseDate,
-            'release_country': film.country
+            'release_country': film.country,
           },
           'runtime': film.duration,
           'genre': film.genres,
@@ -90,7 +90,7 @@ export default class Films extends Observer {
           'already_watched': film.watched,
           'watching_date': film.watchedDate,
           'favorite': film.favorite,
-        }
+        },
       },
     );
 

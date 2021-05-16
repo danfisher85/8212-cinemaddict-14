@@ -49,8 +49,4 @@ export default class Comments extends Observer {
 
     return adaptedComment;
   }
-
-  static adapatToServer(comment) {
-
-  }
 }
