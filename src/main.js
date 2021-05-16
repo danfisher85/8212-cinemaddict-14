@@ -24,9 +24,9 @@ const siteMainElement = document.querySelector('.main');
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const comments = generateComments();
-
 const commentsModel = new CommentsModel();
 commentsModel.setComments(comments);
+
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
 
@@ -50,16 +50,18 @@ const handleNavClick = (navItem) => {
       break;
   }
 };
-mainNavElement.setNavClickHandler(handleNavClick);
 
-render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
 filmListPresenter.init();
 filterPresenter.init();
 
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
+    render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
+    mainNavElement.setNavClickHandler(handleNavClick);
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);
+    render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
+    mainNavElement.setNavClickHandler(handleNavClick);
   });
