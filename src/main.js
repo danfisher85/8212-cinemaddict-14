@@ -1,7 +1,7 @@
 import MainNavView from './view/main-nav.js';
 import StatsView from './view/stats.js';
 import {render, remove, RenderPosition} from './utils/render.js';
-import {NavItem} from './const.js';
+import {NavItem, UpdateType} from './const.js';
 
 import FilmListPresenter from './presenter/film-list.js';
 import FilterPresenter from './presenter/filter.js';
@@ -11,29 +11,22 @@ import FilmsModel from './model/films.js';
 import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 
-// Mocks
-import {generateComments} from './mock/comment.js';
-import {generateFilms} from './mock/film.js';
+import Api from './api.js';
 
-const FILM_COUNT = 20;
-
-const comments = generateComments();
-const films = generateFilms(FILM_COUNT, comments);
-
-const commentsModel = new CommentsModel();
-commentsModel.setComments(comments);
-
-const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
-
-const filterModel = new FilterModel();
+const AUTHORIZATION = 'Basic fRxjCTzZVTjPgAAeA';
+const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 const siteMainElement = document.querySelector('.main');
 
-const mainNavElement = new MainNavView();
-render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
+const api = new Api(END_POINT, AUTHORIZATION);
 
-const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
+const commentsModel = new CommentsModel();
+const filmsModel = new FilmsModel();
+const filterModel = new FilterModel();
+
+const mainNavElement = new MainNavView();
+
+const filmListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel, api);
 const filterPresenter = new FilterPresenter(mainNavElement, filterModel, filmsModel);
 
 let statsComponent = null;
@@ -51,7 +44,18 @@ const handleNavClick = (navItem) => {
       break;
   }
 };
-mainNavElement.setNavClickHandler(handleNavClick);
 
 filmListPresenter.init();
 filterPresenter.init();
+
+api.getFilms()
+  .then((films) => {
+    filmsModel.setFilms(UpdateType.INIT, films);
+    render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
+    mainNavElement.setNavClickHandler(handleNavClick);
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
+    render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
+    mainNavElement.setNavClickHandler(handleNavClick);
+  });

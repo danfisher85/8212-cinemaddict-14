@@ -20,11 +20,6 @@ export const getTruncatedText = (text) => {
   return text;
 };
 
-export const getRandomDate = (start, end) => {
-  const newDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  return dayjs(newDate).format();
-};
-
 export const getFilmCardDate = (date) => {
   return dayjs(date).format('YYYY');
 };
