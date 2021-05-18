@@ -59,7 +59,6 @@ export default class FilmList {
     render(this._filmListComponent, this._filmListInnerComponent, RenderPosition.BEFOREEND); // .films-list__container
 
     this._renderFilmList();
-    this._renderFooterStats();
   }
 
   _renderHeaderProfile() {
@@ -261,6 +260,7 @@ export default class FilmList {
     }
 
     this._renderHeaderProfile();
+    this._renderFooterStats();
     this._renderSort();
     this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
 
