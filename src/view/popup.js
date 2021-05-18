@@ -4,14 +4,14 @@ import { getRandomArrayElement } from '../utils/common.js';
 import {getFilmPopupDate, getCommentHumaziedDate, getPluralized, getHumanizedDuration} from '../utils/film.js';
 import Smart from './smart.js';
 
-const createEmojiTemplate = (currentEmoji) => {
-  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? 'checked' : ''}>
+const createEmojiTemplate = (currentEmoji, isDisabled) => {
+  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
     <label class="film-details__emoji-label" for="emoji-${emoji}">
       <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
     </label>`).join('');
 };
 
-const createCommentTemplate = (comments) => {
+const createCommentTemplate = (comments, isDisabled, isDeleting) => {
   return Object.values(comments).map(({id, author, comment, emoji, date}) => `<li class="film-details__comment" data-id="${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
@@ -21,7 +21,9 @@ const createCommentTemplate = (comments) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${getCommentHumaziedDate(date)}</span>
-        <button class="film-details__comment-delete" data-id="${id}">Delete</button>
+        <button class="film-details__comment-delete" data-id="${id}" ${isDisabled ? 'disabled' : ''}>
+          ${isDeleting ? 'Deleting...' : 'Delete'}
+        </button>
       </p>
     </div>
   </li>`).join('');
@@ -48,10 +50,12 @@ const createPopupTemplate = (state) => {
     emojiState,
     commentState,
     isComments,
+    isDisabled,
+    isDeleting,
   } = state;
 
-  const emojiTemplate = createEmojiTemplate(emojiState);
-  const commentsTemplate = createCommentTemplate(isComments);
+  const emojiTemplate = createEmojiTemplate(emojiState, isDisabled);
+  const commentsTemplate = createCommentTemplate(isComments, isDisabled, isDeleting);
   const commentCount = isComments.length;
 
   return `<section class="film-details">
@@ -144,10 +148,10 @@ const createPopupTemplate = (state) => {
             </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentState ? commentState : ''}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled': ''}>${commentState ? commentState : ''}</textarea>
             </label>
 
-            <div class="film-details__emoji-list">
+            <div class="film-details__emoji-list ${isDisabled ? 'disabled' : ''}">
               ${emojiTemplate}
             </div>
           </div>
@@ -317,6 +321,8 @@ export default class Popup extends Smart {
       film,
       {
         isComments: comments.getComments().filter((comment) => film.comments.includes(comment.id)),
+        isDisabled: false,
+        isDeleting: false,
       },
     );
   }
@@ -327,6 +333,8 @@ export default class Popup extends Smart {
     delete state.commentState;
     delete state.emojiState;
     delete state.isComments;
+    delete state.isDisabled;
+    delete state.isDeleting;
 
     return state;
   }

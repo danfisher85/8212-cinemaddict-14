@@ -1132,3 +1132,8 @@ button {
   padding-top: 50px;
   padding-bottom: 50px;
 }
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
