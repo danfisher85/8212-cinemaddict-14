@@ -229,6 +229,7 @@ export default class FilmList {
     this._filmPresenter = {};
 
     remove(this._headerProfileComponent);
+    remove(this._footerStatsComponent);
     remove(this._sortComponent);
     remove(this._noFilmComponent);
     remove(this._loadingComponent);
