@@ -1,4 +1,3 @@
-import {nanoid} from 'nanoid';
 import he from 'he';
 import {EMOJIS, NAMES} from '../const.js';
 import { getRandomArrayElement } from '../utils/common.js';
@@ -263,7 +262,6 @@ export default class Popup extends Smart {
 
       newComment.date = new Date();
       newComment.author = getRandomArrayElement(NAMES);
-      newComment.id = nanoid();
 
       const updatedComments = this._state.isComments;
       updatedComments.push(newComment);
