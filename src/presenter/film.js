@@ -1,7 +1,7 @@
 import FilmView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, State} from '../const.js';
 
 const Mode = {
   CLOSED: 'CLOSED',
@@ -20,6 +20,7 @@ export default class Film {
 
     this._commentsModel = commentsModel;
     this._api = api;
+    this._filmComments = [];
 
     this._handleFilmCardItemsClick = this._handleFilmCardItemsClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -109,10 +110,34 @@ export default class Film {
     remove(this._filmComponent);
   }
 
+  setViewState(state, commentId) {
+    switch (state) {
+      case State.SAVING:
+        this._popupComponent.updateState({
+          isDisabled: true,
+        });
+        break;
+      case State.DELETING:
+        this._popupComponent.updateState({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+    }
+  }
+
+  _getFilmComments() {
+    const comments = this._commentsModel.getComments();
+    const commentsByFilmId = comments.filter((comment) => this._film.comments.includes(comment.id));
+
+    return commentsByFilmId;
+  }
+
   _renderFilmPopup() {
     document.body.classList.add('hide-overflow');
 
-    this._popupComponent = new PopupView(this._film, this._commentsModel);
+    this._filmComments = this._getFilmComments();
+    this._popupComponent = new PopupView(this._film, this._filmComments);
     document.addEventListener('keydown', this._escKeyDownHandler);
 
     this._changeMode();
@@ -170,20 +195,10 @@ export default class Film {
   }
 
   _handleFormSubmit(newComment) {
-
-    const updatedComments = this._film.comments;
-    updatedComments.push(newComment.id);
-
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          comments: updatedComments,
-        },
-      ),
+      this._film,
       newComment,
     );
   }

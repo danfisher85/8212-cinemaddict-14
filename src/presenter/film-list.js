@@ -10,7 +10,7 @@ import ShowMoreView from '../view/show-more.js';
 import {sortFilmDate, sortFilmRating, getWatchedFilmsCount} from '../utils/film.js';
 import {filter} from '../utils/filter.js';
 import FilmPresenter from './film.js';
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {SortType, UpdateType, UserAction, State} from '../const.js';
 
 import {render, RenderPosition, remove} from '../utils/render.js';
 
@@ -137,12 +137,14 @@ export default class FilmList {
         });
         break;
       case UserAction.ADD_COMMENT:
+        this._filmPresenter[update.id].setViewState(State.SAVING, comment);
         this._api.addComment(update, comment).then((response) => {
           this._commentsModel.addComment(updateType, response.film, response.comments);
           this._filmsModel.updateFilm(updateType, response.film);
         });
         break;
       case UserAction.DELETE_COMMENT:
+        this._filmPresenter[update.id].setViewState(State.DELETING, comment);
         this._api.deleteComment(comment).then(() => {
           this._commentsModel.deleteComment(updateType, comment);
           this._filmsModel.updateFilm(updateType, update);
