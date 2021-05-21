@@ -10,7 +10,7 @@ import ShowMoreView from '../view/show-more.js';
 import {sortFilmDate, sortFilmRating, getWatchedFilmsCount} from '../utils/film.js';
 import {filter} from '../utils/filter.js';
 import FilmPresenter from './film.js';
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {SortType, UpdateType, UserAction, State} from '../const.js';
 
 import {render, RenderPosition, remove} from '../utils/render.js';
 
@@ -59,7 +59,6 @@ export default class FilmList {
     render(this._filmListComponent, this._filmListInnerComponent, RenderPosition.BEFOREEND); // .films-list__container
 
     this._renderFilmList();
-    this._renderFooterStats();
   }
 
   _renderHeaderProfile() {
@@ -138,12 +137,18 @@ export default class FilmList {
         });
         break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, update, comment);
-        this._filmsModel.updateFilm(updateType, update);
+        this._filmPresenter[update.id].setViewState(State.SAVING, comment);
+        this._api.addComment(update, comment).then((response) => {
+          this._commentsModel.addComment(updateType, response.film, response.comments);
+          this._filmsModel.updateFilm(updateType, response.film);
+        });
         break;
       case UserAction.DELETE_COMMENT:
-        this._commentsModel.deleteComment(updateType, comment);
-        this._filmsModel.updateFilm(updateType, update);
+        this._filmPresenter[update.id].setViewState(State.DELETING, comment);
+        this._api.deleteComment(comment).then(() => {
+          this._commentsModel.deleteComment(updateType, comment);
+          this._filmsModel.updateFilm(updateType, update);
+        });
         break;
     }
   }
@@ -226,6 +231,7 @@ export default class FilmList {
     this._filmPresenter = {};
 
     remove(this._headerProfileComponent);
+    remove(this._footerStatsComponent);
     remove(this._sortComponent);
     remove(this._noFilmComponent);
     remove(this._loadingComponent);
@@ -257,6 +263,7 @@ export default class FilmList {
     }
 
     this._renderHeaderProfile();
+    this._renderFooterStats();
     this._renderSort();
     this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
 

@@ -1,7 +1,7 @@
 import FilmView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, State} from '../const.js';
 
 const Mode = {
   CLOSED: 'CLOSED',
@@ -20,6 +20,7 @@ export default class Film {
 
     this._commentsModel = commentsModel;
     this._api = api;
+    this._filmComments = [];
 
     this._handleFilmCardItemsClick = this._handleFilmCardItemsClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -60,7 +61,7 @@ export default class Film {
   _handleFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      this._mode === Mode.CLOSED ? UpdateType.MINOR : UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -74,7 +75,7 @@ export default class Film {
   _handleWatchlistClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      this._mode === Mode.CLOSED ? UpdateType.MINOR : UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -88,49 +89,7 @@ export default class Film {
   _handleWatchedClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
-      Object.assign(
-        {},
-        this._film,
-        {
-          watched: !this._film.watched,
-        },
-      ),
-    );
-  }
-
-  _handlePopupFavoriteClick() {
-    this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          favorite: !this._film.favorite,
-        },
-      ),
-    );
-  }
-
-  _handlePopupWatchlistClick() {
-    this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          watchListed: !this._film.watchListed,
-        },
-      ),
-    );
-  }
-
-  _handlePopupWatchedClick() {
-    this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      this._mode === Mode.CLOSED ? UpdateType.MINOR : UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -151,23 +110,43 @@ export default class Film {
     remove(this._filmComponent);
   }
 
+  setViewState(state) {
+    switch (state) {
+      case State.SAVING:
+        this._popupComponent.updateState({
+          isDisabled: true,
+        });
+        break;
+      case State.DELETING:
+        this._popupComponent.updateState({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+    }
+  }
+
+  _getFilmComments() {
+    const comments = this._commentsModel.getComments();
+    const commentsByFilmId = comments.filter((comment) => this._film.comments.includes(comment.id));
+
+    return commentsByFilmId;
+  }
+
   _renderFilmPopup() {
     document.body.classList.add('hide-overflow');
 
-    this._popupComponent = new PopupView(this._film, this._commentsModel);
+    this._filmComments = this._getFilmComments();
+    this._popupComponent = new PopupView(this._film, this._filmComments);
     document.addEventListener('keydown', this._escKeyDownHandler);
 
     this._changeMode();
     this._mode = Mode.OPENED;
 
-    this._handlePopupFavoriteClick = this._handlePopupFavoriteClick.bind(this);
-    this._handlePopupWatchlistClick = this._handlePopupWatchlistClick.bind(this);
-    this._handlePopupWatchedClick = this._handlePopupWatchedClick.bind(this);
-
     this._popupComponent.setCloseClickHandler(this._removePopup);
-    this._popupComponent.setFavoriteClickHandler(this._handlePopupFavoriteClick);
-    this._popupComponent.setWatchlistClickHandler(this._handlePopupWatchlistClick);
-    this._popupComponent.setWatchedClickHandler(this._handlePopupWatchedClick);
+    this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
+    this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._popupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
     this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
 
@@ -216,20 +195,10 @@ export default class Film {
   }
 
   _handleFormSubmit(newComment) {
-
-    const updatedComments = this._film.comments;
-    updatedComments.push(newComment.id);
-
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          comments: updatedComments,
-        },
-      ),
+      this._film,
       newComment,
     );
   }
