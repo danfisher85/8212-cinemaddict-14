@@ -1,7 +1,12 @@
 import he from 'he';
-import {EMOJIS} from '../const.js';
+import {EMOJIS, NAMES} from '../const.js';
 import {getFilmPopupDate, getCommentHumaziedDate, getPluralized, getHumanizedDuration} from '../utils/film.js';
 import Smart from './smart.js';
+
+const DeleteButtonStatus = {
+  DELETING: 'Deleting…',
+  DELETE: 'Delete',
+};
 
 const createEmojiTemplate = (currentEmoji, isDisabled) => {
   return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
@@ -10,8 +15,8 @@ const createEmojiTemplate = (currentEmoji, isDisabled) => {
     </label>`).join('');
 };
 
-const createCommentTemplate = (comments, isDisabled, isDeleting) => {
-  return Object.values(comments).map(({id, author, comment, emoji, date}) => `<li class="film-details__comment" data-id="${id}">
+const createCommentTemplate = (comments) => {
+  return Object.values(comments).map(({id, author, comment, emoji, date}) => `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
     </span>
@@ -20,9 +25,7 @@ const createCommentTemplate = (comments, isDisabled, isDeleting) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${getCommentHumaziedDate(date)}</span>
-        <button class="film-details__comment-delete" data-id="${id}" ${isDisabled ? 'disabled' : ''}>
-          ${isDeleting ? 'Deleting...' : 'Delete'}
-        </button>
+        <button class="film-details__comment-delete" data-id="${id}">Delete</button>
       </p>
     </div>
   </li>`).join('');
@@ -181,6 +184,12 @@ export default class Popup extends Smart {
     return createPopupTemplate(this._state);
   }
 
+  disableDeleteCommentButton(commentId) {
+    const deleteButton = this.getElement().querySelector(`[data-id="${commentId}"]`);
+    deleteButton.disabled = true;
+    deleteButton.textContent = DeleteButtonStatus.DELETING;
+  }
+
   _closeClickHandler(evt) {
     evt.preventDefault();
     this._callback.closeClick();
@@ -262,12 +271,7 @@ export default class Popup extends Smart {
 
       newComment.date = new Date();
 
-      this._callback.formSubmit(Popup.parseFilmStateToFilmData(newComment));
-
-      this.updateState({
-        emojiState: null,
-        commentState: null,
-      });
+      this._callback.formSubmit(newComment);
     }
   }
 
@@ -311,22 +315,10 @@ export default class Popup extends Smart {
       {},
       film,
       {
-        isComments: comments,
+        isComments: comments.getComments().filter((comment) => film.comments.includes(comment.id)),
         isDisabled: false,
         isDeleting: false,
       },
     );
-  }
-
-  static parseFilmStateToFilmData(state) {
-    state = Object.assign({}, state);
-
-    delete state.commentState;
-    delete state.emojiState;
-    delete state.isComments;
-    delete state.isDisabled;
-    delete state.isDeleting;
-
-    return state;
   }
 }
