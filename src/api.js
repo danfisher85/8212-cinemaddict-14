@@ -54,7 +54,7 @@ export default class Api {
         return ({
           film: FilmsModel.adaptToClient(data.movie),
           comments: CommentsModel.adaptToClient(data.comments),
-        })
+        });
       });
   }
 

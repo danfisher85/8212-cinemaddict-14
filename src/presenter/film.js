@@ -110,7 +110,7 @@ export default class Film {
     remove(this._filmComponent);
   }
 
-  setViewState(state, commentId) {
+  setViewState(state) {
     switch (state) {
       case State.SAVING:
         this._popupComponent.updateState({

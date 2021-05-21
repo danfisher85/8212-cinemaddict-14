@@ -53,4 +53,4 @@ export const StatsFilterType = {
 export const State = {
   SAVING: 'SAVING',
   DELETING: 'DELETING',
-}
+};
