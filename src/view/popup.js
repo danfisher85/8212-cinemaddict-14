@@ -1,5 +1,5 @@
 import he from 'he';
-import {EMOJIS, NAMES} from '../const.js';
+import {EMOJIS} from '../const.js';
 import {getFilmPopupDate, getCommentHumaziedDate, getPluralized, getHumanizedDuration} from '../utils/film.js';
 import Smart from './smart.js';
 
@@ -271,7 +271,12 @@ export default class Popup extends Smart {
 
       newComment.date = new Date();
 
-      this._callback.formSubmit(newComment);
+      this._callback.formSubmit(Popup.parseFilmStateToFilmData(newComment));
+
+      this.updateState({
+        emojiState: null,
+        commentState: null,
+      });
     }
   }
 
@@ -315,10 +320,22 @@ export default class Popup extends Smart {
       {},
       film,
       {
-        isComments: comments.getComments().filter((comment) => film.comments.includes(comment.id)),
+        isComments: comments.getComments(),
         isDisabled: false,
         isDeleting: false,
       },
     );
+  }
+
+  static parseFilmStateToFilmData(state) {
+    state = Object.assign({}, state);
+
+    delete state.commentState;
+    delete state.emojiState;
+    delete state.isComments;
+    delete state.isDisabled;
+    delete state.isDeleting;
+
+    return state;
   }
 }

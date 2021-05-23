@@ -20,7 +20,6 @@ export default class Film {
 
     this._commentsModel = commentsModel;
     this._api = api;
-    this._filmComments = [];
 
     this._handleFilmCardItemsClick = this._handleFilmCardItemsClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -144,13 +143,13 @@ export default class Film {
     render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
   }
 
-  _handleModelEvent(updateType, data) {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this._removePopup();
-        this._renderFilmPopup();
-        break;
-    }
+  _handleModelEvent() {
+    const prevPopupScrollHeight = this._popupComponent.getElement().scrollHeight;
+
+    this._removePopup();
+    this._renderFilmPopup();
+
+    this._popupComponent.getElement().scrollTop = prevPopupScrollHeight;
   }
 
   _handleFilmCardItemsClick() {

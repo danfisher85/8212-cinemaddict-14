@@ -181,7 +181,7 @@ export default class FilmList {
   }
 
   _renderFilm(film, filmContainer) {
-    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewAction, this._handlePopupMode, this._commentsModel, this._api, this._filmsModel);
+    const filmPresenter = new FilmPresenter(filmContainer, this._handleViewAction, this._handlePopupMode, this._commentsModel, this._api);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
