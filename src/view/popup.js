@@ -8,6 +8,8 @@ const DeleteButtonStatus = {
   DELETE: 'Delete',
 };
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const createEmojiTemplate = (currentEmoji, isDisabled) => {
   return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
     <label class="film-details__emoji-label" for="emoji-${emoji}">
@@ -70,7 +72,7 @@ const createPopupTemplate = (state) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${poster}" alt="${title}">
 
-            <p class="film-details__age">${audienceRating}</p>
+            <p class="film-details__age">${audienceRating}+</p>
           </div>
 
           <div class="film-details__info">
@@ -188,6 +190,17 @@ export default class Popup extends Smart {
     const deleteButton = this.getElement().querySelector(`[data-id="${commentId}"]`);
     deleteButton.disabled = true;
     deleteButton.textContent = DeleteButtonStatus.DELETING;
+  }
+
+  enableDeleteCommentElement(commentId) {
+    const deleteButton = this.getElement().querySelector(`[data-id="${commentId}"]`);
+    const parent = deleteButton.closest('.film-details__comment');
+    parent.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT}ms`;
+    setTimeout(() => {
+      parent.style.animation = '';
+      deleteButton.disabled = false;
+      deleteButton.textContent = DeleteButtonStatus.DELETE;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _closeClickHandler(evt) {

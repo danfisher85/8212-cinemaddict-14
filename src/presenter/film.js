@@ -110,6 +110,12 @@ export default class Film {
   }
 
   setViewState(state, comment) {
+    const resetFormState = () => {
+      this._popupComponent.updateState({
+        isDisabled: false,
+      });
+    };
+
     switch (state) {
       case State.SAVING:
         this._popupComponent.updateState({
@@ -118,6 +124,12 @@ export default class Film {
         break;
       case State.DELETING:
         this._popupComponent.disableDeleteCommentButton(comment);
+        break;
+      case State.ABORTING_SAVING:
+        this._popupComponent.shake(resetFormState);
+        break;
+      case State.ABORTING_DELETING:
+        this._popupComponent.enableDeleteCommentElement(comment);
         break;
     }
   }
