@@ -1,6 +1,8 @@
 import AbstractView from './abstract.js';
 import {getTruncatedText, getFilmCardDate, getPluralized, getHumanizedDuration} from '../utils/film.js';
 
+const MAX_DESCRIPTION_SIZE = 140;
+
 const createFilmCardTemplate = (film) => {
   const {
     title,
@@ -30,7 +32,7 @@ const createFilmCardTemplate = (film) => {
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
-    <p class="film-card__description">${getTruncatedText(description)}</p>
+    <p class="film-card__description">${getTruncatedText(description, MAX_DESCRIPTION_SIZE)}</p>
     <a class="film-card__comments">${commentCount} ${getPluralized(commentCount, 'comment')}</a>
     <div class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchListClassName}" type="button">Add to watchlist</button>

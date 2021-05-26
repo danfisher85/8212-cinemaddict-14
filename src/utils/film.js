@@ -12,9 +12,9 @@ export const getHumanizedDuration = (minsTotal) => {
   return hoursOutput + mins + 'm';
 };
 
-export const getTruncatedText = (text) => {
-  if (text.length > 139) {
-    const truncatedText = text.substring(0, 139) + '...';
+export const getTruncatedText = (text, maxChars) => {
+  if (text.length > maxChars) {
+    const truncatedText = text.substring(0, maxChars - 1) + '...';
     return truncatedText;
   }
   return text;
