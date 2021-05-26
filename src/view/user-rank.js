@@ -1,22 +1,22 @@
 import AbstractView from './abstract.js';
 import {getUserRankName} from '../utils/film.js';
 
-const createProfileTemplate = (filmCount) => {
-  const userRatingName = getUserRankName(filmCount);
+const createUserRankTemplate = (filmCount) => {
+  const userRankName = getUserRankName(filmCount);
 
   return `<section class="header__profile profile">
-    ${userRatingName ? `<p class="profile__rating">${userRatingName}</p>` : ''}
+    ${userRankName ? `<p class="profile__rating">${userRankName}</p>` : ''}
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`;
 };
 
-export default class ProfileHeader extends AbstractView {
+export default class UserRank extends AbstractView {
   constructor(watchedFilmCount) {
     super();
     this._watchedFilmCount = watchedFilmCount;
   }
 
   getTemplate() {
-    return createProfileTemplate(this._watchedFilmCount);
+    return createUserRankTemplate(this._watchedFilmCount);
   }
 }

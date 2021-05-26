@@ -1,8 +1,8 @@
-import HeaderProfileView from '../view/profile.js';
+import UserRankView from '../view/user-rank.js';
 import FooterStatsView from '../view/footer-stats.js';
 import SortingView from '../view/sorting.js';
 import NoFilmView from '../view/no-film.js';
-import FilmHolderView from '../view/films.js';
+import FilmsHolderView from '../view/films-holder.js';
 import FilmsListView from '../view/films-list.js';
 import FilmsListInnerView from '../view/films-list-inner.js';
 import LoadingView from '../view/loading.js';
@@ -37,7 +37,7 @@ export default class FilmList {
     this._siteFooterElement = document.querySelector('.footer');
 
     // List
-    this._filmHolder = new FilmHolderView();
+    this._filmHolder = new FilmsHolderView();
     this._filmListComponent = new FilmsListView();
     this._filmListInnerComponent = new FilmsListInnerView();
     this._noFilmComponent = new NoFilmView();
@@ -67,7 +67,7 @@ export default class FilmList {
     }
 
     const watchedFilmsCount = getWatchedFilmsCount(this._filmsModel.getFilms());
-    this._headerProfileComponent = new HeaderProfileView(watchedFilmsCount);
+    this._headerProfileComponent = new UserRankView(watchedFilmsCount);
 
     render(this._siteHeaderElement, this._headerProfileComponent, RenderPosition.BEFOREEND);
   }
