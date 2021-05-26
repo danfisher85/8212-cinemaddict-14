@@ -18,6 +18,11 @@ export default class MainNav extends AbstractView {
     return createNavTemplate();
   }
 
+  setNavClickHandler(callback) {
+    this._callback.navClick = callback;
+    this.getElement().addEventListener('click', this._navClickHandler);
+  }
+
   _navClickHandler(evt) {
     evt.preventDefault();
 
@@ -39,11 +44,6 @@ export default class MainNav extends AbstractView {
     this.getElement().querySelector(`[href="#${NavItem.STATS}"]`).classList.remove('main-navigation__additional--active');
     currentItem.classList.add('main-navigation__item--active');
     this._callback.navClick(NavItem.FILMS);
-  }
-
-  setNavClickHandler(callback) {
-    this._callback.navClick = callback;
-    this.getElement().addEventListener('click', this._navClickHandler);
   }
 
 }

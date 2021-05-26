@@ -57,48 +57,6 @@ export default class Film {
     remove(prevFilmComponent);
   }
 
-  _handleFavoriteClick() {
-    this._changeData(
-      UserAction.UPDATE_FILM,
-      this._mode === Mode.CLOSED ? UpdateType.MINOR : UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          favorite: !this._film.favorite,
-        },
-      ),
-    );
-  }
-
-  _handleWatchlistClick() {
-    this._changeData(
-      UserAction.UPDATE_FILM,
-      this._mode === Mode.CLOSED ? UpdateType.MINOR : UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          watchListed: !this._film.watchListed,
-        },
-      ),
-    );
-  }
-
-  _handleWatchedClick() {
-    this._changeData(
-      UserAction.UPDATE_FILM,
-      this._mode === Mode.CLOSED ? UpdateType.MINOR : UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          watched: !this._film.watched,
-        },
-      ),
-    );
-  }
-
   resetView() {
     if (this._mode !== Mode.CLOSED) {
       this._removePopup();
@@ -155,6 +113,14 @@ export default class Film {
     render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
   }
 
+  _removePopup() {
+    remove(this._popupComponent);
+    this._commentsModel.removeObserver(this._handleModelEvent);
+    document.body.classList.remove('hide-overflow');
+    document.removeEventListener('keydown', this._escKeyDownHandler);
+    this._mode = Mode.CLOSED;
+  }
+
   _handleModelEvent() {
     const prevPopupScrollHeight = this._popupComponent.getElement().scrollHeight;
 
@@ -176,19 +142,53 @@ export default class Film {
       });
   }
 
-  _removePopup() {
-    remove(this._popupComponent);
-    this._commentsModel.removeObserver(this._handleModelEvent);
-    document.body.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', this._escKeyDownHandler);
-    this._mode = Mode.CLOSED;
-  }
-
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._removePopup();
     }
+  }
+
+  _handleFavoriteClick() {
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      this._mode === Mode.CLOSED ? UpdateType.MINOR : UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          favorite: !this._film.favorite,
+        },
+      ),
+    );
+  }
+
+  _handleWatchlistClick() {
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      this._mode === Mode.CLOSED ? UpdateType.MINOR : UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          watchListed: !this._film.watchListed,
+        },
+      ),
+    );
+  }
+
+  _handleWatchedClick() {
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      this._mode === Mode.CLOSED ? UpdateType.MINOR : UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          watched: !this._film.watched,
+        },
+      ),
+    );
   }
 
   _handleDeleteCommentClick(commentId) {

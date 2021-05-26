@@ -34,18 +34,6 @@ export default class Filter {
     remove(prevFilterComponent);
   }
 
-  _handleModelEvent() {
-    this.init();
-  }
-
-  _handleFilterTypeChange(filterType) {
-    if (this._filterModel.get() === filterType) {
-      return;
-    }
-
-    this._filterModel.set(UpdateType.MAJOR, filterType);
-  }
-
   _getFilters() {
     const films = this._filmsModel.get();
 
@@ -71,5 +59,17 @@ export default class Filter {
         count: filter[FilterType.FAVORITES](films).length,
       },
     ];
+  }
+
+  _handleModelEvent() {
+    this.init();
+  }
+
+  _handleFilterTypeChange(filterType) {
+    if (this._filterModel.get() === filterType) {
+      return;
+    }
+
+    this._filterModel.set(UpdateType.MAJOR, filterType);
   }
 }

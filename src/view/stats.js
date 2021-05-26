@@ -169,12 +169,12 @@ export default class Stats extends Smart {
     this._setInnerHandlers();
   }
 
-  removeElement() {
-    super.removeElement();
-  }
-
   getTemplate() {
     return createStatsTemplate(this._state, this._currentFilterType);
+  }
+
+  removeElement() {
+    super.removeElement();
   }
 
   restoreHandlers() {
@@ -184,17 +184,6 @@ export default class Stats extends Smart {
 
   _setInnerHandlers() {
     this.getElement().querySelector('.statistic__filters').addEventListener('change', this._filterTypeChangeHandler);
-  }
-
-  _filterTypeChangeHandler(evt) {
-    if (evt.target.tagName !== 'INPUT') {
-      return;
-    }
-    evt.preventDefault();
-
-    this._currentFilterType = evt.target.value;
-
-    this.updateState({});
   }
 
   _setGenresChart() {
@@ -207,5 +196,16 @@ export default class Stats extends Smart {
     const currentChartFilter = statisticCtx.dataset.filter;
 
     this._genresChart = createGenresChart(statisticCtx, films, currentChartFilter);
+  }
+
+  _filterTypeChangeHandler(evt) {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+    evt.preventDefault();
+
+    this._currentFilterType = evt.target.value;
+
+    this.updateState({});
   }
 }
