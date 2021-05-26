@@ -3,6 +3,13 @@ import {EMOJIS} from '../const.js';
 import {getFilmPopupDate, getCommentHumaziedDate, getPluralized, getHumanizedDuration} from '../utils/film.js';
 import Smart from './smart.js';
 
+const DeleteButtonStatus = {
+  DELETING: 'Deleting…',
+  DELETE: 'Delete',
+};
+
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const createEmojiTemplate = (currentEmoji, isDisabled) => {
   return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${currentEmoji === emoji ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
     <label class="film-details__emoji-label" for="emoji-${emoji}">
@@ -10,8 +17,8 @@ const createEmojiTemplate = (currentEmoji, isDisabled) => {
     </label>`).join('');
 };
 
-const createCommentTemplate = (comments, isDisabled, isDeleting) => {
-  return Object.values(comments).map(({id, author, comment, emoji, date}) => `<li class="film-details__comment" data-id="${id}">
+const createCommentTemplate = (comments) => {
+  return Object.values(comments).map(({id, author, comment, emoji, date}) => `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
     </span>
@@ -20,9 +27,7 @@ const createCommentTemplate = (comments, isDisabled, isDeleting) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${getCommentHumaziedDate(date)}</span>
-        <button class="film-details__comment-delete" data-id="${id}" ${isDisabled ? 'disabled' : ''}>
-          ${isDeleting ? 'Deleting...' : 'Delete'}
-        </button>
+        <button class="film-details__comment-delete" data-id="${id}">Delete</button>
       </p>
     </div>
   </li>`).join('');
@@ -67,7 +72,7 @@ const createPopupTemplate = (state) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${poster}" alt="${title}">
 
-            <p class="film-details__age">${audienceRating}</p>
+            <p class="film-details__age">${audienceRating}+</p>
           </div>
 
           <div class="film-details__info">
@@ -179,6 +184,23 @@ export default class Popup extends Smart {
 
   getTemplate() {
     return createPopupTemplate(this._state);
+  }
+
+  disableDeleteCommentButton(commentId) {
+    const deleteButton = this.getElement().querySelector(`[data-id="${commentId}"]`);
+    deleteButton.disabled = true;
+    deleteButton.textContent = DeleteButtonStatus.DELETING;
+  }
+
+  enableDeleteCommentElement(commentId) {
+    const deleteButton = this.getElement().querySelector(`[data-id="${commentId}"]`);
+    const parent = deleteButton.closest('.film-details__comment');
+    parent.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT}ms`;
+    setTimeout(() => {
+      parent.style.animation = '';
+      deleteButton.disabled = false;
+      deleteButton.textContent = DeleteButtonStatus.DELETE;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _closeClickHandler(evt) {
@@ -311,7 +333,7 @@ export default class Popup extends Smart {
       {},
       film,
       {
-        isComments: comments,
+        isComments: comments.getComments(),
         isDisabled: false,
         isDeleting: false,
       },
