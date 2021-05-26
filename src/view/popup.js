@@ -278,7 +278,7 @@ export default class Popup extends Smart {
         comment: this._state.commentState,
       };
 
-      if (newComment.emoji === '' || newComment.comment === '' || newComment.emoji === null || newComment.comment === null) {
+      if (!newComment.emoji || newComment.emoji === '' || newComment.comment === '' || newComment.emoji === null || newComment.comment === null) {
         return;
       }
 
@@ -286,10 +286,8 @@ export default class Popup extends Smart {
 
       this._callback.formSubmit(Popup.parseFilmStateToFilmData(newComment));
 
-      this.updateState({
-        emojiState: null,
-        commentState: null,
-      });
+      this._state.emojiState = null;
+      this._state.commentState = null;
     }
   }
 
