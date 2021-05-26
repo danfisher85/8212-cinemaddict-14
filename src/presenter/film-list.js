@@ -66,7 +66,7 @@ export default class FilmList {
       this._headerProfileComponent = null;
     }
 
-    const watchedFilmsCount = getWatchedFilmsCount(this._filmsModel.getFilms());
+    const watchedFilmsCount = getWatchedFilmsCount(this._filmsModel.get());
     this._headerProfileComponent = new UserRankView(watchedFilmsCount);
 
     render(this._siteHeaderElement, this._headerProfileComponent, RenderPosition.BEFOREEND);
@@ -77,7 +77,7 @@ export default class FilmList {
       this._footerStatsComponent = null;
     }
 
-    this._footerStatsComponent = new FooterStatsView(this._filmsModel.getFilms().length);
+    this._footerStatsComponent = new FooterStatsView(this._filmsModel.get().length);
     render(this._siteFooterElement, this._footerStatsComponent, RenderPosition.BEFOREEND);
   }
 
@@ -94,8 +94,8 @@ export default class FilmList {
   }
 
   _getFilms() {
-    const filterType = this._filterModel.getFilter();
-    const films = this._filmsModel.getFilms().slice(); // quest: без slice() не работает default сортировка
+    const filterType = this._filterModel.get();
+    const films = this._filmsModel.get().slice();
     const filteredFilms = filter[filterType](films);
 
     switch (this._currentSortType) {
@@ -133,15 +133,15 @@ export default class FilmList {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
         this._api.updateFilm(update).then((response) => {
-          this._filmsModel.updateFilm(updateType, response);
+          this._filmsModel.update(updateType, response);
         });
         break;
       case UserAction.ADD_COMMENT:
         this._filmPresenter[update.id].setViewState(State.SAVING, comment);
         this._api.addComment(update, comment)
           .then((response) => {
-            this._commentsModel.addComment(updateType, response.film, response.comments);
-            this._filmsModel.updateFilm(updateType, response.film);
+            this._commentsModel.add(updateType, response.film, response.comments);
+            this._filmsModel.update(updateType, response.film);
           })
           .catch(() => {
             this._filmPresenter[update.id].setViewState(State.ABORTING_SAVING, comment);
@@ -151,8 +151,8 @@ export default class FilmList {
         this._filmPresenter[update.id].setViewState(State.DELETING, comment);
         this._api.deleteComment(comment)
           .then(() => {
-            this._commentsModel.deleteComment(updateType, comment);
-            this._filmsModel.updateFilm(updateType, update);
+            this._commentsModel.delete(updateType, comment);
+            this._filmsModel.update(updateType, update);
           })
           .catch(() => {
             this._filmPresenter[update.id].setViewState(State.ABORTING_DELETING, comment);

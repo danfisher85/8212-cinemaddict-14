@@ -167,11 +167,11 @@ export default class Film {
   _handleFilmCardItemsClick() {
     this._api.getComments(this._film.id)
       .then((comments) => {
-        this._commentsModel.setComments(UpdateType.INIT, comments);
+        this._commentsModel.set(UpdateType.INIT, comments);
         this._renderFilmPopup();
       })
       .catch(() => {
-        this._commentsModel.setComments(UpdateType.INIT, []);
+        this._commentsModel.set(UpdateType.INIT, []);
         this._renderFilmPopup();
       });
   }

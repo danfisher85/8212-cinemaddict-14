@@ -6,23 +6,23 @@ export default class Comments extends Observer {
     this._comments = [];
   }
 
-  setComments(updateType, comments) {
+  set(updateType, comments) {
     this._comments = comments.slice();
 
     this._notify(updateType);
   }
 
-  getComments() {
+  get() {
     return this._comments;
   }
 
-  addComment(updateType, update, comments) {
+  add(updateType, update, comments) {
     this._comments = comments;
 
     this._notify(updateType, update);
   }
 
-  deleteComment(updateType, commentId) {
+  delete(updateType, commentId) {
     const count = this._comments.length;
     this._comments = this._comments.filter((comment) => comment.id !== commentId);
 

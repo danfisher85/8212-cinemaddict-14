@@ -39,7 +39,7 @@ const handleNavClick = (navItem) => {
       break;
     case NavItem.STATS:
       filmListPresenter.hide();
-      statsComponent = new StatsView(filmsModel.getFilms());
+      statsComponent = new StatsView(filmsModel.get());
       render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
       break;
   }
@@ -50,12 +50,12 @@ filterPresenter.init();
 
 api.getFilms()
   .then((films) => {
-    filmsModel.setFilms(UpdateType.INIT, films);
+    filmsModel.set(UpdateType.INIT, films);
     render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
     mainNavElement.setNavClickHandler(handleNavClick);
   })
   .catch(() => {
-    filmsModel.setFilms(UpdateType.INIT, []);
+    filmsModel.set(UpdateType.INIT, []);
     render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
     mainNavElement.setNavClickHandler(handleNavClick);
   });

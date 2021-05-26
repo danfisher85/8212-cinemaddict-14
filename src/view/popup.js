@@ -331,7 +331,7 @@ export default class Popup extends Smart {
       {},
       film,
       {
-        isComments: comments.getComments(),
+        isComments: comments.get(),
         isDisabled: false,
         isDeleting: false,
       },
