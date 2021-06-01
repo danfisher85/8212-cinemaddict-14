@@ -59,3 +59,7 @@ api.getFilms()
     render(siteMainElement, mainNavElement, RenderPosition.AFTERBEGIN);
     mainNavElement.setNavClickHandler(handleNavClick);
   });
+
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/sw.js');
+});
